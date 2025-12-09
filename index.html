@@ -42,6 +42,7 @@
             padding: 25px;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
         }
         
         .chat-header.admin-mode {
@@ -82,6 +83,7 @@
             font-size: 14px;
             font-weight: 700;
             display: none;
+            cursor: pointer;
         }
         
         .admin-badge.active {
@@ -221,7 +223,7 @@
             padding: 20px;
         }
         
-        .admin-panel.active {
+        .admin-panel.show {
             display: flex;
         }
         
@@ -232,6 +234,8 @@
             max-width: 500px;
             width: 100%;
             color: white;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         .admin-title {
@@ -374,7 +378,7 @@
             background: #ff3366;
         }
         
-        .captcha-container {
+        .captcha-container, .math-container, .word-scramble, .memory-game, .riddle-container {
             background: white;
             padding: 40px;
             border-radius: 20px;
@@ -399,7 +403,7 @@
             transform: skew(-5deg) rotate(-2deg);
         }
         
-        .captcha-input {
+        .captcha-input, .challenge-input {
             width: 100%;
             padding: 15px;
             font-size: 20px;
@@ -458,14 +462,6 @@
             30% { transform: translateY(-10px); }
         }
         
-        .math-container, .word-scramble, .memory-game, .riddle-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-        }
-        
         .math-question {
             font-size: 36px;
             color: #333;
@@ -499,23 +495,12 @@
             margin: 20px 0;
             line-height: 1.6;
         }
-        
-        .challenge-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 20px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-        }
     </style>
 </head>
 <body>
     <div class="chat-container" id="chatContainer">
         <div class="chat-header" id="chatHeader">
-            <div class="admin-badge" id="adminBadge">👑 ADMIN</div>
+            <div class="admin-badge" id="adminBadge" onclick="openAdminPanel()">👑 ADMIN</div>
             <h1>💬 Chat Assistant</h1>
             <p id="headerStatus">Online • Ready to help</p>
             <div class="floor-indicator" id="floorIndicator">FLOOR 1</div>
@@ -626,31 +611,13 @@
             "Oh Manveer, typing 'hi' again? The creativity is... underwhelming. 🥱",
             "Manveer, I've seen rocks with better conversation skills. But please, continue. 🪨",
             "Fascinating input, Manveer. Did it take you all day to come up with that? 🤔",
-            "Manveer, your typing speed suggests you're either very thoughtful or very confused. I'm betting on the latter. 😏",
-            "Ah yes, another message from Manveer. My excitement is... palpable. Can you feel it? No? Me neither. 😴",
-            "Manveer, I'm starting to think you're just mashing keys and hoping for the best. Am I wrong? 🎹",
-            "That's... certainly a collection of letters you've sent me, Manveer. Gold star for effort! ⭐ (Participation trophy really)",
-            "Manveer, if I had a dollar for every brain cell you used typing that, I'd have... well, let's not get into specifics. 💸",
-            "Oh look, Manveer graced me with another message. Should I feel honored? Spoiler: I don't. 👑",
-            "Manveer, I've analyzed your message and concluded that autocorrect is working overtime for you. 🤖",
-            "Interesting choice of words, Manveer. By 'interesting' I mean 'predictably boring.' 📖",
-            "Manveer, are you trying to set a record for most mundane messages? Because you're winning. 🏆",
-            "I'm impressed, Manveer. Not by your message, but by your unwavering commitment to mediocrity. 👏",
-            "Manveer, that message had the energy of a sloth on sedatives. Try harder. 🦥",
-            "Oh Manveer, you're like a human random word generator, except less random and more... repetitive. 🔄"
+            "Manveer, your typing speed suggests you're either very thoughtful or very confused. I'm betting on the latter. 😏"
         ];
         
         const cleverRoasts = [
             "Manveer, I'd explain it to you, but I left my crayons at home. 🖍️",
             "You know Manveer, they say practice makes perfect. You're living proof that's a lie. 💀",
-            "Manveer, somewhere out there is a tree tirelessly producing oxygen for you. You owe it an apology. 🌳",
-            "I'm not saying you're slow, Manveer, but Internet Explorer sends you 'hang in there' messages. 🐌",
-            "Manveer, you're proof that evolution can go in reverse. Darwin is crying. 🦍➡️🧠❌",
-            "If ignorance is bliss, Manveer, you must be the happiest person alive. 😊🎉",
-            "Manveer, you're like a software update. Whenever I see you, I think 'not now.' ⏸️",
-            "I'd agree with you, Manveer, but then we'd both be wrong. And I have a reputation to maintain. 🎭",
-            "Manveer, you bring everyone so much joy... when you leave. 🚪👋",
-            "You're not stupid, Manveer. You just have bad luck when thinking. 🍀❌"
+            "Manveer, somewhere out there is a tree tirelessly producing oxygen for you. You owe it an apology. 🌳"
         ];
         
         let messageCount = 0;
@@ -660,6 +627,7 @@
         let tapTarget = 1000;
         let trollLevel = 1;
         let isAdmin = false;
+        let godModeActive = false;
         
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
@@ -707,9 +675,9 @@
             adminBadge.classList.add('active');
             chatHeader.classList.add('admin-mode');
             headerStatus.textContent = 'ADMIN MODE ACTIVATED 👑';
-            adminPanel.classList.add('active');
             updateAdminInfo();
-            addMessage("🎉 ADMIN ACCESS GRANTED! Welcome, Boss! You now have full control. 👑");
+            openAdminPanel();
+            addMessage("🎉 ADMIN ACCESS GRANTED! Welcome, Boss! Click the 👑 ADMIN badge anytime to open the control panel. 👑");
         }
         
         function updateAdminInfo() {
@@ -717,8 +685,15 @@
             document.getElementById('adminMessageCount').textContent = messageCount;
         }
         
+        function openAdminPanel() {
+            if (isAdmin) {
+                adminPanel.classList.add('show');
+                updateAdminInfo();
+            }
+        }
+        
         function closeAdminPanel() {
-            adminPanel.classList.remove('active');
+            adminPanel.classList.remove('show');
         }
         
         function skipToFloor2() {
@@ -743,32 +718,38 @@
         
         function triggerTapChallenge() {
             closeAdminPanel();
-            showTapChallenge();
+            if (!godModeActive) showTapChallenge();
+            else addMessage("⚡ GOD MODE: Tap challenge skipped! 👑");
         }
         
         function triggerButtonChase() {
             closeAdminPanel();
-            showButtonChase();
+            if (!godModeActive) showButtonChase();
+            else addMessage("⚡ GOD MODE: Button chase skipped! 👑");
         }
         
         function triggerMathChallenge() {
             closeAdminPanel();
-            showMathChallenge();
+            if (!godModeActive) showMathChallenge();
+            else addMessage("⚡ GOD MODE: Math challenge skipped! 👑");
         }
         
         function triggerWordScramble() {
             closeAdminPanel();
-            showWordScramble();
+            if (!godModeActive) showWordScramble();
+            else addMessage("⚡ GOD MODE: Word scramble skipped! 👑");
         }
         
         function triggerMemoryGame() {
             closeAdminPanel();
-            showMemoryGame();
+            if (!godModeActive) showMemoryGame();
+            else addMessage("⚡ GOD MODE: Memory game skipped! 👑");
         }
         
         function triggerRiddle() {
             closeAdminPanel();
-            showRiddle();
+            if (!godModeActive) showRiddle();
+            else addMessage("⚡ GOD MODE: Riddle skipped! 👑");
         }
         
         function resetChat() {
@@ -776,14 +757,21 @@
             currentFloor = 1;
             floor1Completed = false;
             trollLevel = 1;
+            godModeActive = false;
             chatMessages.innerHTML = '';
             skipToFloor1();
+            closeAdminPanel();
             addMessage("🔄 ADMIN: Chat reset! Starting fresh. 🎮");
         }
         
         function godMode() {
+            godModeActive = !godModeActive;
             closeAdminPanel();
-            addMessage("⚡ GOD MODE ACTIVATED! All challenges disabled. You're invincible, Boss! 👑✨");
+            if (godModeActive) {
+                addMessage("⚡ GOD MODE ACTIVATED! All challenges disabled. You're invincible, Boss! 👑✨");
+            } else {
+                addMessage("⚡ GOD MODE DEACTIVATED! Challenges re-enabled. Back to normal! 🎮");
+            }
         }
         
         function upgradeToFloor2() {
@@ -796,9 +784,6 @@
             setTimeout(() => {
                 addMessage("Welcome to FLOOR 2... where I actually use my brain. 🧠");
             }, 2000);
-            setTimeout(() => {
-                addMessage("Hope you're ready for some REAL challenges, genius. 😏");
-            }, 4000);
         }
         
         // FLOOR 1 CHALLENGES
@@ -850,8 +835,6 @@
             button.onmouseenter = function() {
                 moveButton();
                 attempts++;
-                if (attempts === 15) button.textContent = "Is this your cardio, Manveer? 🏃";
-                else if (attempts === 30) button.textContent = "Still trying? Adorable. 🥺";
             };
             
             button.onclick = function() {
@@ -900,11 +883,7 @@
             const operations = [
                 { q: "What's 17 × 13?", a: "221" },
                 { q: "Square root of 144?", a: "12" },
-                { q: "23 + 89 - 47?", a: "65" },
-                { q: "15% of 200?", a: "30" },
-                { q: "2^8 = ?", a: "256" },
-                { q: "What's 7 × 8 × 3?", a: "168" },
-                { q: "99 ÷ 9 + 11?", a: "22" }
+                { q: "23 + 89 - 47?", a: "65" }
             ];
             
             const challenge = operations[Math.floor(Math.random() * operations.length)];
@@ -922,7 +901,7 @@
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     overlay.classList.remove('active');
-                    addMessage("Time's up, Manveer! Did you need a calculator? Or maybe a tutor? 📚😂");
+                    addMessage("Time's up, Manveer! Did you need a calculator? 📚😂");
                 }
             }, 1000);
             
@@ -948,10 +927,7 @@
             const words = [
                 { scrambled: "VERMANEE", answer: "manveer" },
                 { scrambled: "NIARB", answer: "brain" },
-                { scrambled: "TPUSID", answer: "stupid" },
-                { scrambled: "LOLRT", answer: "troll" },
-                { scrambled: "SELOR", answer: "loser" },
-                { scrambled: "AIFLED", answer: "failed" }
+                { scrambled: "LOLRT", answer: "troll" }
             ];
             
             const word = words[Math.floor(Math.random() * words.length)];
@@ -964,7 +940,7 @@
                 if (e.key === 'Enter') {
                     if (wordInput.value.toLowerCase() === word.answer) {
                         overlay.classList.remove('active');
-                        addMessage(`Wow Manveer, you unscrambled "${word.answer}"! Your English teacher would be proud. Maybe. 📖`);
+                        addMessage(`Wow Manveer, you unscrambled "${word.answer}"! 📖`);
                     } else {
                         overlay.classList.remove('active');
                         addMessage(`Nope! It was "${word.answer}". Manveer, do you even alphabet? 🔤`);
@@ -1019,9 +995,7 @@
             const riddles = [
                 { q: "I speak without a mouth and hear without ears. What am I?", a: "echo" },
                 { q: "The more you take, the more you leave behind. What am I?", a: "footsteps" },
-                { q: "What has keys but no locks, space but no room?", a: "keyboard" },
-                { q: "I'm tall when I'm young, short when I'm old. What am I?", a: "candle" },
-                { q: "What can travel around the world while staying in a corner?", a: "stamp" }
+                { q: "What has keys but no locks, space but no room?", a: "keyboard" }
             ];
             
             const riddle = riddles[Math.floor(Math.random() * riddles.length)];
@@ -1034,7 +1008,7 @@
                 if (e.key === 'Enter') {
                     if (riddleInput.value.toLowerCase().includes(riddle.a)) {
                         overlay.classList.remove('active');
-                        addMessage(`Correct! Manveer solved a riddle! Someone call Guinness World Records! 📖🏆`);
+                        addMessage(`Correct! Manveer solved a riddle! 📖🏆`);
                     } else {
                         overlay.classList.remove('active');
                         addMessage(`Nope! It was "${riddle.a}". Manveer, critical thinking isn't your forte, is it? 🤔`);
@@ -1062,7 +1036,7 @@
             addMessage(text, false);
             messageInput.value = '';
             messageCount++;
-            updateAdminInfo();
+            if (isAdmin) updateAdminInfo();
             
             showTyping();
             
@@ -1072,43 +1046,27 @@
                 if (messageCount === 1) {
                     addMessage("Oh hello there, Manveer! 😊");
                     setTimeout(() => addMessage("Ready for some FUN? 😈"), 1500);
-                } else if (messageCount === 2) {
+                } else if (messageCount === 2 && !godModeActive) {
                     addMessage("Let's start with something SIMPLE, Manveer...");
                     setTimeout(showTapChallenge, 2000);
                 } else if (!floor1Completed) {
                     // FLOOR 1 LOGIC
-                    if (messageCount % 3 === 0) showTapChallenge();
-                    else if (messageCount % 5 === 0) showButtonChase();
-                    else if (messageCount % 7 === 0) showCaptcha();
-                    else addMessage(floor1Messages[Math.floor(Math.random() * floor1Messages.length)]);
+                    if (!godModeActive) {
+                        if (messageCount % 3 === 0) showTapChallenge();
+                        else if (messageCount % 5 === 0) showButtonChase();
+                        else if (messageCount % 7 === 0) showCaptcha();
+                        else addMessage(floor1Messages[Math.floor(Math.random() * floor1Messages.length)]);
+                    } else {
+                        addMessage("⚡ GOD MODE: Challenge skipped! Keep chatting, Boss! 👑");
+                    }
                 } else {
                     // FLOOR 2 LOGIC
-                    const rand = Math.random();
-                    
-                    if (messageCount % 4 === 0) {
+                    if (!godModeActive && messageCount % 4 === 0) {
                         const challenges = [showMathChallenge, showWordScramble, showMemoryGame, showRiddle];
                         challenges[Math.floor(Math.random() * challenges.length)]();
-                    } else if (rand < 0.3) {
-                        addMessage(cleverRoasts[Math.floor(Math.random() * cleverRoasts.length)]);
-                    } else if (rand < 0.6) {
-                        if (text.length < 5) {
-                            addMessage("Manveer, that message was shorter than your attention span. Impressive. 📏");
-                        } else if (text.includes('?')) {
-                            addMessage("A question, Manveer? Let me answer: No. Whatever it is, just... no. 🙅");
-                        } else if (text.toUpperCase() === text) {
-                            addMessage("CAPS LOCK, Manveer? Are we yelling? Or did you forget how keyboards work? ⌨️😂");
-                        } else {
-                            addMessage(floor2Messages[Math.floor(Math.random() * floor2Messages.length)]);
-                        }
                     } else {
-                        const meta = [
-                            "Manveer, I'm analyzing your typing patterns. Conclusion: chaotic neutral with a hint of desperation. 📊",
-                            "Fun fact, Manveer: I've been counting. That's your " + messageCount + "th message. Still waiting for a good one. ⏰",
-                            "Manveer, if our conversation was a movie, critics would call it 'aggressively mediocre.' 🎬⭐",
-                            "I'm starting to think you're just here for the abuse, Manveer. It's okay, I don't judge. Much. 😏",
-                            "Manveer, somewhere, a village is missing its idiot. Oh wait, found them. 🏘️👋"
-                        ];
-                        addMessage(meta[Math.floor(Math.random() * meta.length)]);
+                        const allMessages = [...floor2Messages, ...cleverRoasts];
+                        addMessage(allMessages[Math.floor(Math.random() * allMessages.length)]);
                     }
                 }
             }, 800 + Math.random() * 1200);
@@ -1119,15 +1077,9 @@
             if (e.key === 'Enter') sendMessage();
         };
         
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && !isAdmin) {
-                e.preventDefault();
-                addMessage("Escape key? Manveer, you can't escape me. I'm in your head now. 🧠👻");
-            }
-        });
-        
         setTimeout(() => addMessage("Welcome! 👋"), 500);
         setTimeout(() => addMessage("Type something to get started..."), 1500);
+        setTimeout(() => addMessage("Psst... try typing 'I am the boss' 😉"), 3000);
     </script>
 </body>
 </html>
