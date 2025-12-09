@@ -56,6 +56,17 @@
             margin-top: 5px;
         }
         
+        .floor-indicator {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -168,7 +179,6 @@
             transform: scale(0.95);
         }
         
-        /* TROLL OVERLAYS */
         .troll-overlay {
             position: fixed;
             top: 0;
@@ -343,6 +353,84 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
+        
+        /* FLOOR 2 CHALLENGES */
+        .math-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .math-question {
+            font-size: 36px;
+            color: #333;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+        
+        .math-timer {
+            font-size: 24px;
+            color: #ff3366;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+        
+        .word-scramble {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .scrambled-word {
+            font-size: 48px;
+            color: #667eea;
+            margin: 20px 0;
+            font-weight: 700;
+            letter-spacing: 5px;
+        }
+        
+        .memory-game {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .memory-sequence {
+            font-size: 72px;
+            margin: 30px 0;
+        }
+        
+        .riddle-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .riddle-text {
+            font-size: 24px;
+            color: #333;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .challenge-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 20px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -350,6 +438,7 @@
         <div class="chat-header">
             <h1>💬 Chat Assistant</h1>
             <p>Online • Ready to help</p>
+            <div class="floor-indicator" id="floorIndicator">FLOOR 1</div>
         </div>
         
         <div class="chat-messages" id="chatMessages"></div>
@@ -360,7 +449,7 @@
         </div>
     </div>
     
-    <!-- TAP OVERLAY -->
+    <!-- FLOOR 1 OVERLAYS -->
     <div class="troll-overlay" id="tapOverlay">
         <div class="troll-title">TAP THE SCREEN MANVEER!</div>
         <div class="tap-counter" id="tapCounter">0</div>
@@ -370,13 +459,11 @@
         </div>
     </div>
     
-    <!-- BUTTON CHASE OVERLAY -->
     <div class="troll-overlay" id="buttonOverlay">
         <div class="troll-title">CLICK THE BUTTON MANVEER!</div>
         <button class="moving-button" id="movingButton">CLICK ME!</button>
     </div>
     
-    <!-- CAPTCHA OVERLAY -->
     <div class="troll-overlay" id="captchaOverlay">
         <div class="captcha-container">
             <div class="captcha-title">🤖 Verify You're Human, Manveer!</div>
@@ -384,41 +471,91 @@
             <input type="text" class="captcha-input" id="captchaInput" placeholder="Enter the code above">
         </div>
     </div>
+    
+    <!-- FLOOR 2 OVERLAYS -->
+    <div class="troll-overlay" id="mathOverlay">
+        <div class="math-container">
+            <div class="captcha-title">🧮 Solve This, Genius!</div>
+            <div class="math-question" id="mathQuestion">2 + 2 = ?</div>
+            <div class="math-timer">Time: <span id="mathTimer">10</span>s</div>
+            <input type="text" class="challenge-input" id="mathInput" placeholder="Your answer...">
+        </div>
+    </div>
+    
+    <div class="troll-overlay" id="wordOverlay">
+        <div class="word-scramble">
+            <div class="captcha-title">🔤 Unscramble This Word!</div>
+            <div class="scrambled-word" id="scrambledWord">VERMANEE</div>
+            <input type="text" class="challenge-input" id="wordInput" placeholder="Unscrambled word...">
+        </div>
+    </div>
+    
+    <div class="troll-overlay" id="memoryOverlay">
+        <div class="memory-game">
+            <div class="captcha-title">🧠 Remember This Sequence!</div>
+            <div class="memory-sequence" id="memorySequence">🔴🔵🟢🟡</div>
+            <input type="text" class="challenge-input" id="memoryInput" placeholder="Type the emojis..." style="display:none;">
+        </div>
+    </div>
+    
+    <div class="troll-overlay" id="riddleOverlay">
+        <div class="riddle-container">
+            <div class="captcha-title">🤔 Riddle Me This!</div>
+            <div class="riddle-text" id="riddleText">I speak without a mouth and hear without ears. What am I?</div>
+            <input type="text" class="challenge-input" id="riddleInput" placeholder="Your answer...">
+        </div>
+    </div>
 
     <script>
-        const trollMessages = [
+        const floor1Messages = [
             "MANVEER! Tap your screen 1000 times RIGHT NOW! 👆👆👆",
             "YO MANVEER! Shake your device like a MANIAC for 30 seconds! 📱💥",
             "MANVEER EMERGENCY! Scream 'I AM A POTATO' at your screen! 🥔🗣️",
-            "HEY MANVEER! Slap your screen 100 times! HARDER! 👋💥",
-            "MANVEER ALERT! Spin around 50 times until you fall! 🌀😵",
-            "YO MANVEER! Type this message backwards or I'll crash your browser! ⏪",
-            "MANVEER! Press your face against the screen for 2 minutes! 😂",
-            "EMERGENCY MANVEER! Do 500 jumping jacks RIGHT NOW! 🏃‍♂️💨",
-            "MANVEER! Throw your device in the air and catch it 25 times! 🚀",
-            "YO MANVEER! Bang your head on your keyboard until I say stop! 🤕⌨️",
-            "MANVEER ALERT! Lick your screen in the shape of a heart! 👅❤️",
-            "HEY MANVEER! Punch your pillow 100 times pretending it's me! 👊😂",
-            "MANVEER! Stand on one leg and type with your nose! 🦵👃",
-            "YO MANVEER! Sing 'Baby Shark' at maximum volume! 🦈🎵",
-            "MANVEER EMERGENCY! Delete everything you just typed! 🗑️😈",
-            "HEY MANVEER! Close your eyes and type for 5 minutes! 🙈⌨️",
-            "MANVEER! Bite your phone case! HARDER MANVEER! 😬📱",
-            "YO MANVEER! Do the chicken dance for 10 minutes! 🐔💃",
-            "MANVEER ALERT! Uninstall and reinstall your browser! 🔄😂",
-            "HEY MANVEER! Throw your mouse across the room! 🖱️💨"
+            "HEY MANVEER! Slap your screen 100 times! HARDER! 👋💥"
+        ];
+        
+        const floor2Messages = [
+            "Oh Manveer, typing 'hi' again? The creativity is... underwhelming. 🥱",
+            "Manveer, I've seen rocks with better conversation skills. But please, continue. 🪨",
+            "Fascinating input, Manveer. Did it take you all day to come up with that? 🤔",
+            "Manveer, your typing speed suggests you're either very thoughtful or very confused. I'm betting on the latter. 😏",
+            "Ah yes, another message from Manveer. My excitement is... palpable. Can you feel it? No? Me neither. 😴",
+            "Manveer, I'm starting to think you're just mashing keys and hoping for the best. Am I wrong? 🎹",
+            "That's... certainly a collection of letters you've sent me, Manveer. Gold star for effort! ⭐ (Participation trophy really)",
+            "Manveer, if I had a dollar for every brain cell you used typing that, I'd have... well, let's not get into specifics. 💸",
+            "Oh look, Manveer graced me with another message. Should I feel honored? Spoiler: I don't. 👑",
+            "Manveer, I've analyzed your message and concluded that autocorrect is working overtime for you. 🤖",
+            "Interesting choice of words, Manveer. By 'interesting' I mean 'predictably boring.' 📖",
+            "Manveer, are you trying to set a record for most mundane messages? Because you're winning. 🏆",
+            "I'm impressed, Manveer. Not by your message, but by your unwavering commitment to mediocrity. 👏",
+            "Manveer, that message had the energy of a sloth on sedatives. Try harder. 🦥",
+            "Oh Manveer, you're like a human random word generator, except less random and more... repetitive. 🔄"
+        ];
+        
+        const cleverRoasts = [
+            "Manveer, I'd explain it to you, but I left my crayons at home. 🖍️",
+            "You know Manveer, they say practice makes perfect. You're living proof that's a lie. 💀",
+            "Manveer, somewhere out there is a tree tirelessly producing oxygen for you. You owe it an apology. 🌳",
+            "I'm not saying you're slow, Manveer, but Internet Explorer sends you 'hang in there' messages. 🐌",
+            "Manveer, you're proof that evolution can go in reverse. Darwin is crying. 🦍➡️🧠❌",
+            "If ignorance is bliss, Manveer, you must be the happiest person alive. 😊🎉",
+            "Manveer, you're like a software update. Whenever I see you, I think 'not now.' ⏸️",
+            "I'd agree with you, Manveer, but then we'd both be wrong. And I have a reputation to maintain. 🎭",
+            "Manveer, you bring everyone so much joy... when you leave. 🚪👋",
+            "You're not stupid, Manveer. You just have bad luck when thinking. 🍀❌"
         ];
         
         let messageCount = 0;
+        let currentFloor = 1;
+        let floor1Completed = false;
         let tapCount = 0;
         let tapTarget = 1000;
         let trollLevel = 1;
-        let buttonAttempts = 0;
-        let captchaAttempts = 0;
         
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
+        const floorIndicator = document.getElementById('floorIndicator');
         
         function addMessage(text, isBot = true) {
             const messageDiv = document.createElement('div');
@@ -452,6 +589,22 @@
             if (typing) typing.remove();
         }
         
+        function upgradeToFloor2() {
+            currentFloor = 2;
+            floor1Completed = true;
+            floorIndicator.textContent = 'FLOOR 2';
+            floorIndicator.style.background = 'rgba(255, 51, 102, 0.3)';
+            
+            addMessage("🎉 CONGRATULATIONS MANVEER! You've completed Floor 1!");
+            setTimeout(() => {
+                addMessage("Welcome to FLOOR 2... where I actually use my brain. 🧠");
+            }, 2000);
+            setTimeout(() => {
+                addMessage("Hope you're ready for some REAL challenges, genius. 😏");
+            }, 4000);
+        }
+        
+        // FLOOR 1 CHALLENGES
         function showTapChallenge() {
             const overlay = document.getElementById('tapOverlay');
             tapTarget = 500 + (trollLevel * 500);
@@ -469,20 +622,14 @@
                 const progress = (tapCount / tapTarget) * 100;
                 document.getElementById('tapProgress').style.width = progress + '%';
                 
-                if (navigator.vibrate) {
-                    navigator.vibrate(10);
-                }
+                if (navigator.vibrate) navigator.vibrate(10);
                 
                 if (tapCount >= tapTarget) {
                     overlay.classList.remove('active');
                     document.getElementById('chatContainer').classList.remove('shake-screen');
                     trollLevel++;
                     setTimeout(() => {
-                        addMessage(`HAHAHA MANVEER! You actually tapped ${tapCount} times! You're INSANE! 🤣🤣🤣`);
-                        setTimeout(() => {
-                            addMessage("But wait... there's MORE! 😈");
-                            setTimeout(showButtonChase, 2000);
-                        }, 2000);
+                        addMessage(`${tapCount} taps, Manveer? Your finger must be filing for workers' compensation. 😂`);
                     }, 500);
                 }
             };
@@ -492,38 +639,28 @@
             const overlay = document.getElementById('buttonOverlay');
             const button = document.getElementById('movingButton');
             overlay.classList.add('active');
-            buttonAttempts = 0;
+            let attempts = 0;
             
             function moveButton() {
                 const maxX = window.innerWidth - 250;
                 const maxY = window.innerHeight - 100;
-                const x = Math.random() * maxX;
-                const y = Math.random() * maxY;
-                button.style.left = x + 'px';
-                button.style.top = y + 'px';
+                button.style.left = Math.random() * maxX + 'px';
+                button.style.top = Math.random() * maxY + 'px';
             }
             
             moveButton();
             
-            button.addEventListener('mouseenter', function() {
+            button.onmouseenter = function() {
                 moveButton();
-                buttonAttempts++;
-                if (buttonAttempts === 10) {
-                    button.textContent = "TOO SLOW MANVEER! 😂";
-                } else if (buttonAttempts === 20) {
-                    button.textContent = "GIVE UP YET? 🤣";
-                } else if (buttonAttempts === 30) {
-                    button.textContent = "YOU'LL NEVER CATCH ME! 👻";
-                } else if (buttonAttempts > 50) {
-                    button.textContent = "MANVEER IS A LOSER! 💀";
-                }
-            });
+                attempts++;
+                if (attempts === 15) button.textContent = "Is this your cardio, Manveer? 🏃";
+                else if (attempts === 30) button.textContent = "Still trying? Adorable. 🥺";
+            };
             
-            button.addEventListener('click', function() {
+            button.onclick = function() {
                 overlay.classList.remove('active');
-                addMessage(`FINALLY MANVEER! Only took you ${buttonAttempts} attempts! 😂`);
-                setTimeout(showCaptcha, 2000);
-            });
+                addMessage(`Only ${attempts} attempts? Manveer, I expected you to give up sooner. Impressed! 👏`);
+            };
         }
         
         function showCaptcha() {
@@ -533,34 +670,177 @@
             
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let code = '';
-            for (let i = 0; i < 6; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
+            for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
             
             captchaText.textContent = code;
             overlay.classList.add('active');
             captchaInput.value = '';
-            captchaAttempts = 0;
-            
             captchaInput.focus();
             
             captchaInput.onkeyup = function(e) {
                 if (e.key === 'Enter') {
                     if (captchaInput.value.toUpperCase() === code) {
                         overlay.classList.remove('active');
-                        addMessage("CORRECT MANVEER! But that was just the warm-up! 😈");
-                        setTimeout(() => {
-                            addMessage(trollMessages[Math.floor(Math.random() * trollMessages.length)]);
-                        }, 2000);
-                    } else {
-                        captchaAttempts++;
-                        if (captchaAttempts >= 3) {
-                            addMessage("WRONG AGAIN MANVEER! You're terrible at this! 🤣");
-                            showCaptcha();
-                        } else {
-                            captchaInput.value = '';
-                            captchaInput.placeholder = "WRONG! Try again...";
+                        addMessage("Correct! Manveer can read! Alert the press! 📰");
+                        if (trollLevel >= 3 && !floor1Completed) {
+                            setTimeout(upgradeToFloor2, 2000);
                         }
+                    } else {
+                        captchaInput.value = '';
+                        captchaInput.placeholder = "Wrong. Shocking. 🙄";
+                    }
+                }
+            };
+        }
+        
+        // FLOOR 2 CHALLENGES
+        function showMathChallenge() {
+            const overlay = document.getElementById('mathOverlay');
+            const mathQuestion = document.getElementById('mathQuestion');
+            const mathInput = document.getElementById('mathInput');
+            const mathTimer = document.getElementById('mathTimer');
+            
+            const operations = [
+                { q: "What's 17 × 13?", a: "221" },
+                { q: "Square root of 144?", a: "12" },
+                { q: "23 + 89 - 47?", a: "65" },
+                { q: "15% of 200?", a: "30" },
+                { q: "2^8 = ?", a: "256" },
+                { q: "What's 7 × 8 × 3?", a: "168" },
+                { q: "99 ÷ 9 + 11?", a: "22" }
+            ];
+            
+            const challenge = operations[Math.floor(Math.random() * operations.length)];
+            mathQuestion.textContent = challenge.q;
+            overlay.classList.add('active');
+            mathInput.value = '';
+            mathInput.focus();
+            
+            let timeLeft = 15;
+            mathTimer.textContent = timeLeft;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                mathTimer.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    overlay.classList.remove('active');
+                    addMessage("Time's up, Manveer! Did you need a calculator? Or maybe a tutor? 📚😂");
+                }
+            }, 1000);
+            
+            mathInput.onkeyup = function(e) {
+                if (e.key === 'Enter') {
+                    clearInterval(timer);
+                    if (mathInput.value === challenge.a) {
+                        overlay.classList.remove('active');
+                        addMessage(`Correct! Manveer, did you... actually use your brain? I'm shook. 🤯`);
+                    } else {
+                        overlay.classList.remove('active');
+                        addMessage(`Wrong! The answer was ${challenge.a}. Back to kindergarten, Manveer? 🎒`);
+                    }
+                }
+            };
+        }
+        
+        function showWordScramble() {
+            const overlay = document.getElementById('wordOverlay');
+            const scrambledWord = document.getElementById('scrambledWord');
+            const wordInput = document.getElementById('wordInput');
+            
+            const words = [
+                { scrambled: "VERMANEE", answer: "manveer" },
+                { scrambled: "NIARB", answer: "brain" },
+                { scrambled: "TPUSID", answer: "stupid" },
+                { scrambled: "LOLRT", answer: "troll" },
+                { scrambled: "SELOR", answer: "loser" },
+                { scrambled: "AIFLED", answer: "failed" }
+            ];
+            
+            const word = words[Math.floor(Math.random() * words.length)];
+            scrambledWord.textContent = word.scrambled;
+            overlay.classList.add('active');
+            wordInput.value = '';
+            wordInput.focus();
+            
+            wordInput.onkeyup = function(e) {
+                if (e.key === 'Enter') {
+                    if (wordInput.value.toLowerCase() === word.answer) {
+                        overlay.classList.remove('active');
+                        addMessage(`Wow Manveer, you unscrambled "${word.answer}"! Your English teacher would be proud. Maybe. 📖`);
+                    } else {
+                        overlay.classList.remove('active');
+                        addMessage(`Nope! It was "${word.answer}". Manveer, do you even alphabet? 🔤`);
+                    }
+                }
+            };
+        }
+        
+        function showMemoryGame() {
+            const overlay = document.getElementById('memoryOverlay');
+            const memorySequence = document.getElementById('memorySequence');
+            const memoryInput = document.getElementById('memoryInput');
+            
+            const emojis = ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠'];
+            let sequence = '';
+            const length = 4 + Math.floor(Math.random() * 3);
+            
+            for (let i = 0; i < length; i++) {
+                sequence += emojis[Math.floor(Math.random() * emojis.length)];
+            }
+            
+            memorySequence.textContent = sequence;
+            memorySequence.style.display = 'block';
+            memoryInput.style.display = 'none';
+            overlay.classList.add('active');
+            
+            setTimeout(() => {
+                memorySequence.textContent = '❓❓❓❓';
+                memoryInput.style.display = 'block';
+                memoryInput.value = '';
+                memoryInput.focus();
+                
+                memoryInput.onkeyup = function(e) {
+                    if (e.key === 'Enter') {
+                        if (memoryInput.value === sequence) {
+                            overlay.classList.remove('active');
+                            addMessage("Correct sequence! Manveer, you have a brain? Plot twist! 🧠✨");
+                        } else {
+                            overlay.classList.remove('active');
+                            addMessage(`Wrong! It was ${sequence}. Manveer's memory: 404 not found. 💾❌`);
+                        }
+                    }
+                };
+            }, 3000);
+        }
+        
+        function showRiddle() {
+            const overlay = document.getElementById('riddleOverlay');
+            const riddleText = document.getElementById('riddleText');
+            const riddleInput = document.getElementById('riddleInput');
+            
+            const riddles = [
+                { q: "I speak without a mouth and hear without ears. What am I?", a: "echo" },
+                { q: "The more you take, the more you leave behind. What am I?", a: "footsteps" },
+                { q: "What has keys but no locks, space but no room?", a: "keyboard" },
+                { q: "I'm tall when I'm young, short when I'm old. What am I?", a: "candle" },
+                { q: "What can travel around the world while staying in a corner?", a: "stamp" }
+            ];
+            
+            const riddle = riddles[Math.floor(Math.random() * riddles.length)];
+            riddleText.textContent = riddle.q;
+            overlay.classList.add('active');
+            riddleInput.value = '';
+            riddleInput.focus();
+            
+            riddleInput.onkeyup = function(e) {
+                if (e.key === 'Enter') {
+                    if (riddleInput.value.toLowerCase().includes(riddle.a)) {
+                        overlay.classList.remove('active');
+                        addMessage(`Correct! Manveer solved a riddle! Someone call Guinness World Records! 📖🏆`);
+                    } else {
+                        overlay.classList.remove('active');
+                        addMessage(`Nope! It was "${riddle.a}". Manveer, critical thinking isn't your forte, is it? 🤔`);
                     }
                 }
             };
@@ -581,23 +861,51 @@
                 
                 if (messageCount === 1) {
                     addMessage("Oh hello there, Manveer! 😊");
-                    setTimeout(() => {
-                        addMessage("Ready for some FUN? 😈");
-                    }, 1500);
+                    setTimeout(() => addMessage("Ready for some FUN? 😈"), 1500);
                 } else if (messageCount === 2) {
                     addMessage("Let's start with something SIMPLE, Manveer...");
                     setTimeout(showTapChallenge, 2000);
-                } else if (messageCount % 3 === 0) {
-                    showTapChallenge();
-                } else if (messageCount % 5 === 0) {
-                    showButtonChase();
-                } else if (messageCount % 7 === 0) {
-                    showCaptcha();
+                } else if (!floor1Completed) {
+                    // FLOOR 1 LOGIC
+                    if (messageCount % 3 === 0) showTapChallenge();
+                    else if (messageCount % 5 === 0) showButtonChase();
+                    else if (messageCount % 7 === 0) showCaptcha();
+                    else addMessage(floor1Messages[Math.floor(Math.random() * floor1Messages.length)]);
                 } else {
-                    const response = trollMessages[Math.floor(Math.random() * trollMessages.length)];
-                    addMessage(response);
+                    // FLOOR 2 LOGIC - High IQ trolling
+                    const rand = Math.random();
+                    
+                    if (messageCount % 4 === 0) {
+                        // Challenges
+                        const challenges = [showMathChallenge, showWordScramble, showMemoryGame, showRiddle];
+                        challenges[Math.floor(Math.random() * challenges.length)]();
+                    } else if (rand < 0.3) {
+                        // Clever roasts
+                        addMessage(cleverRoasts[Math.floor(Math.random() * cleverRoasts.length)]);
+                    } else if (rand < 0.6) {
+                        // Contextual mockery
+                        if (text.length < 5) {
+                            addMessage("Manveer, that message was shorter than your attention span. Impressive. 📏");
+                        } else if (text.includes('?')) {
+                            addMessage("A question, Manveer? Let me answer: No. Whatever it is, just... no. 🙅");
+                        } else if (text.toUpperCase() === text) {
+                            addMessage("CAPS LOCK, Manveer? Are we yelling? Or did you forget how keyboards work? ⌨️😂");
+                        } else {
+                            addMessage(floor2Messages[Math.floor(Math.random() * floor2Messages.length)]);
+                        }
+                    } else {
+                        // Meta trolling
+                        const meta = [
+                            "Manveer, I'm analyzing your typing patterns. Conclusion: chaotic neutral with a hint of desperation. 📊",
+                            "Fun fact, Manveer: I've been counting. That's your " + messageCount + "th message. Still waiting for a good one. ⏰",
+                            "Manveer, if our conversation was a movie, critics would call it 'aggressively mediocre.' 🎬⭐",
+                            "I'm starting to think you're just here for the abuse, Manveer. It's okay, I don't judge. Much. 😏",
+                            "Manveer, somewhere, a village is missing its idiot. Oh wait, found them. 🏘️👋"
+                        ];
+                        addMessage(meta[Math.floor(Math.random() * meta.length)]);
+                    }
                 }
-            }, 1000 + Math.random() * 1000);
+            }, 800 + Math.random() * 1200);
         }
         
         sendButton.onclick = sendMessage;
@@ -605,22 +913,15 @@
             if (e.key === 'Enter') sendMessage();
         };
         
-        // Prevent escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 e.preventDefault();
-                addMessage("Nice try MANVEER! You can't escape! 😂");
+                addMessage("Escape key? Manveer, you can't escape me. I'm in your head now. 🧠👻");
             }
         });
         
-        // Welcome message
-        setTimeout(() => {
-            addMessage("Welcome! 👋");
-        }, 500);
-        
-        setTimeout(() => {
-            addMessage("Type something to get started...");
-        }, 1500);
+        setTimeout(() => addMessage("Welcome! 👋"), 500);
+        setTimeout(() => addMessage("Type something to get started..."), 1500);
     </script>
 </body>
 </html>
