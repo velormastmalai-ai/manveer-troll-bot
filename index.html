@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manveer's Special Assistant 🤖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .chat-container {
+            width: 90%;
+            max-width: 500px;
+            height: 80vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .bot-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 15px 0;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            background: #e0e0e0;
+            color: #333;
+            padding: 15px;
+            border-radius: 15px 15px 0 15px;
+            max-width: 80%;
+            margin-left: auto;
+            word-wrap: break-word;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #userInput {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        #sendBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        #sendBtn:hover {
+            transform: scale(1.05);
+        }
+        
+        .tap-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .tap-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .tap-counter {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            🤖 Manveer's Special Assistant
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Type something, Manveer...">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+    
+    <div class="tap-overlay" id="tapOverlay">
+        <div class="tap-content">
+            <h2>TAP THE SCREEN!</h2>
+            <div class="tap-counter" id="tapCounter">0</div>
+            <p>Keep tapping, Manveer! 😂</p>
+        </div>
+    </div>
+
+    <script>
+        const trollResponses = [
+            "Hey MANVEER! 👋 Quick question - can you tap your screen 47 times? It's for... science. 🔬",
+            "MANVEER! Your computer is running slow. Please do 10 jumping jacks to speed it up! 🏃‍♂️",
+            "Yo Manveer! I detected you haven't blinked in 3 seconds. BLINK NOW! 👁️",
+            "MANVEER ALERT: Please rotate your device 360 degrees clockwise. Your screen needs calibration! 🔄",
+            "Hey Manveer! Say 'I am a beautiful butterfly' out loud 3 times. The microphone is listening... 🦋",
+            "MANVEER! Urgent: Please stand on one leg for 30 seconds to verify you're human! 🦵",
+            "Yo Manveer! Your keyboard needs cleaning. Please lick your screen to proceed. 👅 (JK DON'T)",
+            "MANVEER MANVEER MANVEER! Wave at your webcam! I'm watching... 👀",
+            "Hey Manveer! Please type 'I love pineapple on pizza' to continue. It's mandatory! 🍕",
+            "MANVEER! Do the chicken dance! Your computer's performance depends on it! 🐔",
+            "Yo Manveer! Spin around 5 times and touch your nose. GO GO GO! 🌀",
+            "MANVEER ALERT: Please sing 'Happy Birthday' to your mouse. It's feeling lonely! 🎂🖱️",
+            "Hey Manveer! Your screen brightness is controlled by your smile. SMILE BIGGER! 😁",
+            "MANVEER! Please hop on your right foot 10 times. It's a new security feature! 🦘",
+            "Yo Manveer! Say 'supercalifragilisticexpialidocious' backwards. I'll wait... ⏰",
+            "MANVEER EMERGENCY: Please pat your head and rub your belly simultaneously! 🤯",
+            "Hey Manveer! Your computer needs a hug. Go ahead, hug it. I'm serious! 🤗💻",
+            "MANVEER! Please make a fish face at your screen for 10 seconds. 🐟",
+            "Yo Manveer! Clap your hands 3 times to activate turbo mode! 👏👏👏",
+            "MANVEER ALERT: Please whisper 'I am the captain now' to your keyboard! 🏴‍☠️",
+            "Hey Manveer! Your mouse needs exercise. Make it do circles! BIG CIRCLES! ⭕",
+            "MANVEER! Please nod your head yes 10 times. The webcam is counting! 🙂",
+            "Yo Manveer! Type with your elbows for the next message. It's elbow day! 💪",
+            "MANVEER EMERGENCY: Please tell your screen a joke. It's feeling sad! 😢",
+            "Hey Manveer! Your computer is thirsty. Pretend to give it water! 💧",
+            "MANVEER! Please do your best robot impression. BEEP BOOP! 🤖",
+            "Yo Manveer! Wiggle your fingers at the screen. It's finger wiggle time! 👋✨",
+            "MANVEER ALERT: Please moonwalk to the nearest wall and back! 🌙🚶",
+            "Hey Manveer! Your screen needs a high-five. SLAP IT! (gently) ✋",
+            "MANVEER! Please count backwards from 100 in increments of 7. I'll wait... 🔢"
+        ];
+        
+        const tapMessages = [
+            "TAP THE SCREEN 50 TIMES, MANVEER! 👆",
+            "MANVEER! EMERGENCY TAP PROTOCOL ACTIVATED! 🚨",
+            "KEEP TAPPING, MANVEER! DON'T STOP! 😂",
+            "TAP FASTER, MANVEER! YOUR LIFE DEPENDS ON IT! ⚡"
+        ];
+        
+        let messageCount = 0;
+        let tapCount = 0;
+        
+        function addMessage(text, isBot = true) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            
+            const bubble = document.createElement('div');
+            bubble.className = isBot ? 'bot-message' : 'user-message';
+            bubble.textContent = text;
+            
+            messageDiv.appendChild(bubble);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function getRandomResponse() {
+            return trollResponses[Math.floor(Math.random() * trollResponses.length)];
+        }
+        
+        function showTapOverlay() {
+            const overlay = document.getElementById('tapOverlay');
+            overlay.style.display = 'flex';
+            tapCount = 0;
+            document.getElementById('tapCounter').textContent = tapCount;
+            
+            overlay.onclick = function() {
+                tapCount++;
+                document.getElementById('tapCounter').textContent = tapCount;
+                
+                if (tapCount >= 50) {
+                    overlay.style.display = 'none';
+                    setTimeout(() => {
+                        addMessage("HAHAHA! You actually did it, Manveer! 😂😂😂 You tapped " + tapCount + " times! LEGEND!");
+                    }, 500);
+                }
+            };
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, false);
+                input.value = '';
+                
+                messageCount++;
+                
+                setTimeout(() => {
+                    if (messageCount % 5 === 0) {
+                        const tapMsg = tapMessages[Math.floor(Math.random() * tapMessages.length)];
+                        addMessage(tapMsg);
+                        setTimeout(showTapOverlay, 1000);
+                    } else {
+                        addMessage(getRandomResponse());
+                    }
+                }, 500 + Math.random() * 1000);
+            }
+        }
+        
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('userInput').onkeypress = function(e) {
+            if (e.key === 'Enter') sendMessage();
+        };
+        
+        // Welcome message
+        setTimeout(() => {
+            addMessage("HELLO MANVEER! 🎉 Welcome to your SPECIAL assistant! I'm here to make your day... interesting! 😈");
+        }, 500);
+        
+        setTimeout(() => {
+            addMessage("Let's start with something simple, Manveer... Can you touch your nose with your tongue? 👅");
+        }, 2000);
+    </script>
+</body>
+</html>
