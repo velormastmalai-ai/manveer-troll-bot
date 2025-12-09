@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manveer's Special Assistant 🤖</title>
+    <title>Manveer's Assistant</title>
     <style>
         * {
             margin: 0;
@@ -31,6 +31,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         
         .chat-header {
@@ -72,6 +73,8 @@
             border-radius: 15px 15px 15px 0;
             max-width: 80%;
             word-wrap: break-word;
+            font-size: 18px;
+            font-weight: bold;
         }
         
         .user-message {
@@ -116,103 +119,149 @@
             transform: scale(1.05);
         }
         
-        .tap-overlay {
+        .fullscreen-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(255,0,0,0.95);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 10000;
+            flex-direction: column;
         }
         
-        .tap-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
+        .overlay-text {
+            color: white;
+            font-size: 60px;
+            font-weight: bold;
             text-align: center;
-            animation: pulse 1s infinite;
+            animation: shake 0.5s infinite;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+        
+        .tap-counter {
+            font-size: 100px;
+            color: yellow;
+            margin: 30px 0;
+            animation: pulse 0.5s infinite;
         }
         
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.2); }
         }
         
-        .tap-counter {
-            font-size: 48px;
+        .moving-button {
+            position: absolute;
+            padding: 15px 30px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
             font-weight: bold;
-            color: #667eea;
-            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        
+        .spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .spinner-content {
+            color: white;
+            font-size: 40px;
+            text-align: center;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .rotate-screen {
+            animation: rotate 2s infinite linear;
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
+    <div class="chat-container" id="chatContainer">
         <div class="chat-header">
-            🤖 Manveer's Special Assistant
+            🤖 Manveer's Assistant
         </div>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="input-area">
-            <input type="text" id="userInput" placeholder="Type something, Manveer...">
+            <input type="text" id="userInput" placeholder="Type here Manveer...">
             <button id="sendBtn">Send</button>
         </div>
     </div>
     
-    <div class="tap-overlay" id="tapOverlay">
-        <div class="tap-content">
-            <h2>TAP THE SCREEN!</h2>
-            <div class="tap-counter" id="tapCounter">0</div>
-            <p>Keep tapping, Manveer! 😂</p>
+    <div class="fullscreen-overlay" id="tapOverlay">
+        <div class="overlay-text" id="overlayText">TAP THE SCREEN NOW MANVEER!</div>
+        <div class="tap-counter" id="tapCounter">0</div>
+        <div style="color: white; font-size: 30px;">TARGET: <span id="tapTarget">500</span></div>
+    </div>
+    
+    <div class="fullscreen-overlay" id="buttonOverlay" style="background: rgba(0,0,255,0.95);">
+        <div class="overlay-text">CLICK THE BUTTON MANVEER!</div>
+        <button class="moving-button" id="movingBtn">CLICK ME!</button>
+    </div>
+    
+    <div class="spinner" id="spinner">
+        <div class="spinner-content">
+            <div style="font-size: 80px;">⏳</div>
+            <div id="spinnerText">LOADING...</div>
+            <div style="font-size: 30px; margin-top: 20px;">Please wait <span id="waitTime">99</span> seconds...</div>
         </div>
     </div>
 
     <script>
-        const trollResponses = [
-            "Hey MANVEER! 👋 Quick question - can you tap your screen 47 times? It's for... science. 🔬",
-            "MANVEER! Your computer is running slow. Please do 10 jumping jacks to speed it up! 🏃‍♂️",
-            "Yo Manveer! I detected you haven't blinked in 3 seconds. BLINK NOW! 👁️",
-            "MANVEER ALERT: Please rotate your device 360 degrees clockwise. Your screen needs calibration! 🔄",
-            "Hey Manveer! Say 'I am a beautiful butterfly' out loud 3 times. The microphone is listening... 🦋",
-            "MANVEER! Urgent: Please stand on one leg for 30 seconds to verify you're human! 🦵",
-            "Yo Manveer! Your keyboard needs cleaning. Please lick your screen to proceed. 👅 (JK DON'T)",
-            "MANVEER MANVEER MANVEER! Wave at your webcam! I'm watching... 👀",
-            "Hey Manveer! Please type 'I love pineapple on pizza' to continue. It's mandatory! 🍕",
-            "MANVEER! Do the chicken dance! Your computer's performance depends on it! 🐔",
-            "Yo Manveer! Spin around 5 times and touch your nose. GO GO GO! 🌀",
-            "MANVEER ALERT: Please sing 'Happy Birthday' to your mouse. It's feeling lonely! 🎂🖱️",
-            "Hey Manveer! Your screen brightness is controlled by your smile. SMILE BIGGER! 😁",
-            "MANVEER! Please hop on your right foot 10 times. It's a new security feature! 🦘",
-            "Yo Manveer! Say 'supercalifragilisticexpialidocious' backwards. I'll wait... ⏰",
-            "MANVEER EMERGENCY: Please pat your head and rub your belly simultaneously! 🤯",
-            "Hey Manveer! Your computer needs a hug. Go ahead, hug it. I'm serious! 🤗💻",
-            "MANVEER! Please make a fish face at your screen for 10 seconds. 🐟",
-            "Yo Manveer! Clap your hands 3 times to activate turbo mode! 👏👏👏",
-            "MANVEER ALERT: Please whisper 'I am the captain now' to your keyboard! 🏴‍☠️",
-            "Hey Manveer! Your mouse needs exercise. Make it do circles! BIG CIRCLES! ⭕",
-            "MANVEER! Please nod your head yes 10 times. The webcam is counting! 🙂",
-            "Yo Manveer! Type with your elbows for the next message. It's elbow day! 💪",
-            "MANVEER EMERGENCY: Please tell your screen a joke. It's feeling sad! 😢",
-            "Hey Manveer! Your computer is thirsty. Pretend to give it water! 💧",
-            "MANVEER! Please do your best robot impression. BEEP BOOP! 🤖",
-            "Yo Manveer! Wiggle your fingers at the screen. It's finger wiggle time! 👋✨",
-            "MANVEER ALERT: Please moonwalk to the nearest wall and back! 🌙🚶",
-            "Hey Manveer! Your screen needs a high-five. SLAP IT! (gently) ✋",
-            "MANVEER! Please count backwards from 100 in increments of 7. I'll wait... 🔢"
-        ];
-        
-        const tapMessages = [
-            "TAP THE SCREEN 50 TIMES, MANVEER! 👆",
-            "MANVEER! EMERGENCY TAP PROTOCOL ACTIVATED! 🚨",
-            "KEEP TAPPING, MANVEER! DON'T STOP! 😂",
-            "TAP FASTER, MANVEER! YOUR LIFE DEPENDS ON IT! ⚡"
+        const insaneTrolls = [
+            "MANVEER! TAP YOUR SCREEN 500 TIMES RIGHT NOW! 👆👆👆",
+            "YO MANVEER! SHAKE YOUR PHONE VIOLENTLY FOR 30 SECONDS! 📱💥",
+            "MANVEER EMERGENCY! SCREAM 'I LOVE TROLLING' AS LOUD AS YOU CAN! 🗣️",
+            "MANVEER! THROW YOUR PHONE IN THE AIR AND CATCH IT 10 TIMES! 🚀",
+            "HEY MANVEER! SLAP YOUR SCREEN 50 TIMES! DO IT NOW! 👋💥",
+            "MANVEER ALERT! SPIN IN CIRCLES UNTIL YOU'RE DIZZY! 🌀😵",
+            "YO MANVEER! DELETE YOUR LAST MESSAGE AND TYPE IT BACKWARDS! ⏪",
+            "MANVEER! PRESS YOUR NOSE AGAINST THE SCREEN FOR 1 MINUTE! 👃",
+            "EMERGENCY MANVEER! DO 100 PUSH-UPS RIGHT NOW! 💪",
+            "MANVEER! BANG YOUR HEAD ON THE KEYBOARD 20 TIMES! 🤕⌨️",
+            "YO MANVEER! LICK YOUR SCREEN IN A CIRCULAR MOTION! 👅⭕",
+            "MANVEER ALERT! THROW YOUR MOUSE ACROSS THE ROOM! 🖱️💨",
+            "HEY MANVEER! UNPLUG YOUR COMPUTER AND PLUG IT BACK IN 10 TIMES! 🔌",
+            "MANVEER! STAND ON YOUR CHAIR AND JUMP OFF! 🪑💥",
+            "YO MANVEER! PUNCH YOUR SCREEN GENTLY... OR NOT! 👊💻",
+            "MANVEER EMERGENCY! POUR WATER ON YOUR KEYBOARD! 💧⌨️ (JK DON'T)",
+            "HEY MANVEER! CLOSE YOUR EYES AND TYPE FOR 5 MINUTES! 🙈",
+            "MANVEER! BITE YOUR PHONE! BITE IT HARD! 😬📱",
+            "YO MANVEER! SMASH THAT KEYBOARD LIKE A GORILLA! 🦍⌨️",
+            "MANVEER ALERT! HEADBUTT YOUR MONITOR! 🤕💻"
         ];
         
         let messageCount = 0;
         let tapCount = 0;
+        let tapTarget = 500;
+        let trollLevel = 1;
+        let buttonMoveCount = 0;
         
         function addMessage(text, isBot = true) {
             const messagesDiv = document.getElementById('chatMessages');
@@ -228,27 +277,119 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
         
-        function getRandomResponse() {
-            return trollResponses[Math.floor(Math.random() * trollResponses.length)];
-        }
-        
         function showTapOverlay() {
             const overlay = document.getElementById('tapOverlay');
+            tapTarget = 200 + (trollLevel * 100);
+            document.getElementById('tapTarget').textContent = tapTarget;
             overlay.style.display = 'flex';
             tapCount = 0;
             document.getElementById('tapCounter').textContent = tapCount;
             
-            overlay.onclick = function() {
+            const messages = [
+                "TAP FASTER MANVEER! 🔥",
+                "COME ON MANVEER! TAP TAP TAP! 👆",
+                "TOO SLOW MANVEER! FASTER! ⚡",
+                "MANVEER YOU'RE PATHETIC! TAP MORE! 😂",
+                "IS THAT ALL YOU GOT MANVEER?! 💪"
+            ];
+            
+            let msgIndex = 0;
+            const msgInterval = setInterval(() => {
+                document.getElementById('overlayText').textContent = messages[msgIndex % messages.length];
+                msgIndex++;
+            }, 1000);
+            
+            overlay.onclick = function(e) {
                 tapCount++;
                 document.getElementById('tapCounter').textContent = tapCount;
                 
-                if (tapCount >= 50) {
+                // Make it vibrate if possible
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+                
+                if (tapCount >= tapTarget) {
+                    clearInterval(msgInterval);
                     overlay.style.display = 'none';
+                    trollLevel++;
                     setTimeout(() => {
-                        addMessage("HAHAHA! You actually did it, Manveer! 😂😂😂 You tapped " + tapCount + " times! LEGEND!");
+                        addMessage(`HAHAHA MANVEER! You tapped ${tapCount} times like a MONKEY! 🐵😂 But we're not done yet...`);
+                        setTimeout(showMovingButton, 2000);
                     }, 500);
                 }
             };
+        }
+        
+        function showMovingButton() {
+            const overlay = document.getElementById('buttonOverlay');
+            const btn = document.getElementById('movingBtn');
+            overlay.style.display = 'flex';
+            buttonMoveCount = 0;
+            
+            function moveButton() {
+                const maxX = window.innerWidth - 200;
+                const maxY = window.innerHeight - 100;
+                const x = Math.random() * maxX;
+                const y = Math.random() * maxY;
+                btn.style.left = x + 'px';
+                btn.style.top = y + 'px';
+            }
+            
+            moveButton();
+            
+            btn.onmouseover = function() {
+                moveButton();
+                buttonMoveCount++;
+                if (buttonMoveCount > 30) {
+                    btn.textContent = "STOP TRYING MANVEER! 😂";
+                }
+            };
+            
+            btn.onclick = function() {
+                overlay.style.display = 'none';
+                addMessage("FINALLY MANVEER! Took you long enough! 🤣");
+                setTimeout(showSpinner, 2000);
+            };
+        }
+        
+        function showSpinner() {
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'flex';
+            let timeLeft = 30;
+            document.getElementById('waitTime').textContent = timeLeft;
+            
+            const messages = [
+                "LOADING YOUR STUPIDITY... 🤡",
+                "CALCULATING HOW DUMB YOU ARE... 🧮",
+                "PROCESSING MANVEER'S PATIENCE... ⏳",
+                "DOWNLOADING MORE TROLLS... 📥",
+                "INSTALLING FRUSTRATION.EXE... 💾"
+            ];
+            
+            let msgIndex = 0;
+            const interval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('waitTime').textContent = timeLeft;
+                document.getElementById('spinnerText').textContent = messages[msgIndex % messages.length];
+                msgIndex++;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    spinner.style.display = 'none';
+                    addMessage("SURPRISE MANVEER! That was all fake! 😂😂😂 Let's go again!");
+                    setTimeout(() => {
+                        addMessage(insaneTrolls[Math.floor(Math.random() * insaneTrolls.length)]);
+                    }, 2000);
+                }
+            }, 1000);
+        }
+        
+        function rotateScreen() {
+            const container = document.getElementById('chatContainer');
+            container.classList.add('rotate-screen');
+            setTimeout(() => {
+                container.classList.remove('rotate-screen');
+            }, 5000);
         }
         
         function sendMessage() {
@@ -258,18 +399,22 @@
             if (message) {
                 addMessage(message, false);
                 input.value = '';
-                
                 messageCount++;
                 
                 setTimeout(() => {
-                    if (messageCount % 5 === 0) {
-                        const tapMsg = tapMessages[Math.floor(Math.random() * tapMessages.length)];
-                        addMessage(tapMsg);
-                        setTimeout(showTapOverlay, 1000);
+                    if (messageCount === 2) {
+                        addMessage("MANVEER! Time for your first challenge! 😈");
+                        setTimeout(showTapOverlay, 1500);
+                    } else if (messageCount % 3 === 0) {
+                        showTapOverlay();
+                    } else if (messageCount % 5 === 0) {
+                        rotateScreen();
+                        addMessage("SCREEN ROTATION ACTIVATED MANVEER! 🌀😂");
                     } else {
-                        addMessage(getRandomResponse());
+                        const response = insaneTrolls[Math.floor(Math.random() * insaneTrolls.length)];
+                        addMessage(response);
                     }
-                }, 500 + Math.random() * 1000);
+                }, 500);
             }
         }
         
@@ -278,14 +423,28 @@
             if (e.key === 'Enter') sendMessage();
         };
         
-        // Welcome message
+        // Prevent right click
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        // Prevent refresh
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+            return 'MANVEER! Where do you think you\'re going?! 😂';
+        });
+        
+        // Welcome messages
         setTimeout(() => {
-            addMessage("HELLO MANVEER! 🎉 Welcome to your SPECIAL assistant! I'm here to make your day... interesting! 😈");
+            addMessage("Hey Manveer! Welcome to your WORST NIGHTMARE! 😈🔥");
         }, 500);
         
         setTimeout(() => {
-            addMessage("Let's start with something simple, Manveer... Can you touch your nose with your tongue? 👅");
+            addMessage("I hope you're ready... because this is going to be INSANE! 💀");
         }, 2000);
+        
+        setTimeout(() => {
+            addMessage("Type something to begin your TORTURE! 😂");
+        }, 3500);
     </script>
 </body>
 </html>
