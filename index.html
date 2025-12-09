@@ -44,6 +44,10 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
+        .chat-header.admin-mode {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
         .chat-header h1 {
             font-size: 24px;
             font-weight: 600;
@@ -65,6 +69,29 @@
             border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
+        }
+        
+        .admin-badge {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            background: rgba(255,215,0,0.9);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            display: none;
+        }
+        
+        .admin-badge.active {
+            display: block;
+            animation: glow 2s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,215,0,0.8); }
         }
         
         .chat-messages {
@@ -177,6 +204,83 @@
         
         #sendButton:active {
             transform: scale(0.95);
+        }
+        
+        /* ADMIN PANEL */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        
+        .admin-panel.active {
+            display: flex;
+        }
+        
+        .admin-content {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 40px;
+            border-radius: 25px;
+            max-width: 500px;
+            width: 100%;
+            color: white;
+        }
+        
+        .admin-title {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+        .admin-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .admin-button {
+            padding: 15px 25px;
+            background: white;
+            color: #f5576c;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .admin-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        
+        .admin-button:active {
+            transform: translateY(0);
+        }
+        
+        .admin-info {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .admin-close {
+            margin-top: 20px;
+            background: rgba(255,255,255,0.3);
         }
         
         .troll-overlay {
@@ -354,8 +458,7 @@
             30% { transform: translateY(-10px); }
         }
         
-        /* FLOOR 2 CHALLENGES */
-        .math-container {
+        .math-container, .word-scramble, .memory-game, .riddle-container {
             background: white;
             padding: 40px;
             border-radius: 20px;
@@ -377,14 +480,6 @@
             font-weight: 700;
         }
         
-        .word-scramble {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-        }
-        
         .scrambled-word {
             font-size: 48px;
             color: #667eea;
@@ -393,25 +488,9 @@
             letter-spacing: 5px;
         }
         
-        .memory-game {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-        }
-        
         .memory-sequence {
             font-size: 72px;
             margin: 30px 0;
-        }
-        
-        .riddle-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
         }
         
         .riddle-text {
@@ -435,9 +514,10 @@
 </head>
 <body>
     <div class="chat-container" id="chatContainer">
-        <div class="chat-header">
+        <div class="chat-header" id="chatHeader">
+            <div class="admin-badge" id="adminBadge">👑 ADMIN</div>
             <h1>💬 Chat Assistant</h1>
-            <p>Online • Ready to help</p>
+            <p id="headerStatus">Online • Ready to help</p>
             <div class="floor-indicator" id="floorIndicator">FLOOR 1</div>
         </div>
         
@@ -446,6 +526,34 @@
         <div class="input-container">
             <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
             <button id="sendButton">➤</button>
+        </div>
+    </div>
+    
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-content">
+            <div class="admin-title">👑 ADMIN CONTROL PANEL</div>
+            
+            <div class="admin-controls">
+                <button class="admin-button" onclick="skipToFloor2()">🚀 Skip to Floor 2</button>
+                <button class="admin-button" onclick="skipToFloor1()">⬅️ Back to Floor 1</button>
+                <button class="admin-button" onclick="triggerTapChallenge()">👆 Force Tap Challenge</button>
+                <button class="admin-button" onclick="triggerButtonChase()">🏃 Force Button Chase</button>
+                <button class="admin-button" onclick="triggerMathChallenge()">🧮 Force Math Challenge</button>
+                <button class="admin-button" onclick="triggerWordScramble()">🔤 Force Word Scramble</button>
+                <button class="admin-button" onclick="triggerMemoryGame()">🧠 Force Memory Game</button>
+                <button class="admin-button" onclick="triggerRiddle()">🤔 Force Riddle</button>
+                <button class="admin-button" onclick="resetChat()">🔄 Reset Everything</button>
+                <button class="admin-button" onclick="godMode()">⚡ GOD MODE (Skip All)</button>
+            </div>
+            
+            <div class="admin-info">
+                <strong>Current Floor:</strong> <span id="adminFloorInfo">1</span><br>
+                <strong>Messages Sent:</strong> <span id="adminMessageCount">0</span><br>
+                <strong>Admin Status:</strong> <span style="color: #ffd700;">ACTIVE</span>
+            </div>
+            
+            <button class="admin-button admin-close" onclick="closeAdminPanel()">❌ Close Panel</button>
         </div>
     </div>
     
@@ -551,11 +659,16 @@
         let tapCount = 0;
         let tapTarget = 1000;
         let trollLevel = 1;
+        let isAdmin = false;
         
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const floorIndicator = document.getElementById('floorIndicator');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminBadge = document.getElementById('adminBadge');
+        const chatHeader = document.getElementById('chatHeader');
+        const headerStatus = document.getElementById('headerStatus');
         
         function addMessage(text, isBot = true) {
             const messageDiv = document.createElement('div');
@@ -587,6 +700,90 @@
         function removeTyping() {
             const typing = document.getElementById('typing');
             if (typing) typing.remove();
+        }
+        
+        function activateAdmin() {
+            isAdmin = true;
+            adminBadge.classList.add('active');
+            chatHeader.classList.add('admin-mode');
+            headerStatus.textContent = 'ADMIN MODE ACTIVATED 👑';
+            adminPanel.classList.add('active');
+            updateAdminInfo();
+            addMessage("🎉 ADMIN ACCESS GRANTED! Welcome, Boss! You now have full control. 👑");
+        }
+        
+        function updateAdminInfo() {
+            document.getElementById('adminFloorInfo').textContent = currentFloor;
+            document.getElementById('adminMessageCount').textContent = messageCount;
+        }
+        
+        function closeAdminPanel() {
+            adminPanel.classList.remove('active');
+        }
+        
+        function skipToFloor2() {
+            currentFloor = 2;
+            floor1Completed = true;
+            floorIndicator.textContent = 'FLOOR 2';
+            floorIndicator.style.background = 'rgba(255, 51, 102, 0.3)';
+            updateAdminInfo();
+            closeAdminPanel();
+            addMessage("⚡ ADMIN: Skipped to Floor 2! High-IQ mode activated. 🧠");
+        }
+        
+        function skipToFloor1() {
+            currentFloor = 1;
+            floor1Completed = false;
+            floorIndicator.textContent = 'FLOOR 1';
+            floorIndicator.style.background = 'rgba(255,255,255,0.2)';
+            updateAdminInfo();
+            closeAdminPanel();
+            addMessage("⚡ ADMIN: Back to Floor 1! Basic troll mode. 👆");
+        }
+        
+        function triggerTapChallenge() {
+            closeAdminPanel();
+            showTapChallenge();
+        }
+        
+        function triggerButtonChase() {
+            closeAdminPanel();
+            showButtonChase();
+        }
+        
+        function triggerMathChallenge() {
+            closeAdminPanel();
+            showMathChallenge();
+        }
+        
+        function triggerWordScramble() {
+            closeAdminPanel();
+            showWordScramble();
+        }
+        
+        function triggerMemoryGame() {
+            closeAdminPanel();
+            showMemoryGame();
+        }
+        
+        function triggerRiddle() {
+            closeAdminPanel();
+            showRiddle();
+        }
+        
+        function resetChat() {
+            messageCount = 0;
+            currentFloor = 1;
+            floor1Completed = false;
+            trollLevel = 1;
+            chatMessages.innerHTML = '';
+            skipToFloor1();
+            addMessage("🔄 ADMIN: Chat reset! Starting fresh. 🎮");
+        }
+        
+        function godMode() {
+            closeAdminPanel();
+            addMessage("⚡ GOD MODE ACTIVATED! All challenges disabled. You're invincible, Boss! 👑✨");
         }
         
         function upgradeToFloor2() {
@@ -850,9 +1047,22 @@
             const text = messageInput.value.trim();
             if (!text) return;
             
+            // Check for admin password
+            if (text.toLowerCase() === 'i am the boss' && !isAdmin) {
+                addMessage(text, false);
+                messageInput.value = '';
+                showTyping();
+                setTimeout(() => {
+                    removeTyping();
+                    activateAdmin();
+                }, 1000);
+                return;
+            }
+            
             addMessage(text, false);
             messageInput.value = '';
             messageCount++;
+            updateAdminInfo();
             
             showTyping();
             
@@ -872,18 +1082,15 @@
                     else if (messageCount % 7 === 0) showCaptcha();
                     else addMessage(floor1Messages[Math.floor(Math.random() * floor1Messages.length)]);
                 } else {
-                    // FLOOR 2 LOGIC - High IQ trolling
+                    // FLOOR 2 LOGIC
                     const rand = Math.random();
                     
                     if (messageCount % 4 === 0) {
-                        // Challenges
                         const challenges = [showMathChallenge, showWordScramble, showMemoryGame, showRiddle];
                         challenges[Math.floor(Math.random() * challenges.length)]();
                     } else if (rand < 0.3) {
-                        // Clever roasts
                         addMessage(cleverRoasts[Math.floor(Math.random() * cleverRoasts.length)]);
                     } else if (rand < 0.6) {
-                        // Contextual mockery
                         if (text.length < 5) {
                             addMessage("Manveer, that message was shorter than your attention span. Impressive. 📏");
                         } else if (text.includes('?')) {
@@ -894,7 +1101,6 @@
                             addMessage(floor2Messages[Math.floor(Math.random() * floor2Messages.length)]);
                         }
                     } else {
-                        // Meta trolling
                         const meta = [
                             "Manveer, I'm analyzing your typing patterns. Conclusion: chaotic neutral with a hint of desperation. 📊",
                             "Fun fact, Manveer: I've been counting. That's your " + messageCount + "th message. Still waiting for a good one. ⏰",
@@ -914,7 +1120,7 @@
         };
         
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && !isAdmin) {
                 e.preventDefault();
                 addMessage("Escape key? Manveer, you can't escape me. I'm in your head now. 🧠👻");
             }
