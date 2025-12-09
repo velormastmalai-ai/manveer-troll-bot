@@ -677,7 +677,6 @@
             headerStatus.textContent = 'ADMIN MODE ACTIVATED 👑';
             updateAdminInfo();
             openAdminPanel();
-            addMessage("🎉 ADMIN ACCESS GRANTED! Welcome, Boss! Click the 👑 ADMIN badge anytime to open the control panel. 👑");
         }
         
         function updateAdminInfo() {
@@ -1021,14 +1020,25 @@
             const text = messageInput.value.trim();
             if (!text) return;
             
-            // Check for admin password
-            if (text.toLowerCase() === 'i am the boss' && !isAdmin) {
+            // ADMIN PASSWORD CHECK - Multiple variations
+            const lowerText = text.toLowerCase().replace(/\s+/g, ' ').trim();
+            const adminCodes = [
+                'i am the boss',
+                'i am boss',
+                'iam the boss',
+                'iamtheboss',
+                'boss',
+                'admin'
+            ];
+            
+            if (!isAdmin && adminCodes.includes(lowerText)) {
                 addMessage(text, false);
                 messageInput.value = '';
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
                     activateAdmin();
+                    addMessage("🎉 ADMIN ACCESS GRANTED! Welcome, Boss! Click the 👑 ADMIN badge anytime to open the control panel. 👑");
                 }, 1000);
                 return;
             }
@@ -1079,7 +1089,7 @@
         
         setTimeout(() => addMessage("Welcome! 👋"), 500);
         setTimeout(() => addMessage("Type something to get started..."), 1500);
-        setTimeout(() => addMessage("Psst... try typing 'I am the boss' 😉"), 3000);
+        setTimeout(() => addMessage("💡 Secret: Try typing 'boss' or 'admin' 😉"), 3500);
     </script>
 </body>
 </html>
