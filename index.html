@@ -33,7 +33,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            position: relative;
         }
         
         .chat-header {
@@ -41,38 +40,28 @@
             color: white;
             padding: 25px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: relative;
             transition: all 0.5s;
         }
         
         .chat-header.floor2 {
-            background: linear-gradient(135deg, #0a0000 0%, #8b0000 100%);
-            animation: headerPulse 1.5s infinite, shake 0.3s infinite;
+            background: linear-gradient(135deg, #1a0000 0%, #8b0000 100%);
+            animation: headerPulse 2s infinite;
         }
         
         @keyframes headerPulse {
-            0%, 100% { box-shadow: 0 0 40px rgba(139,0,0,0.8), inset 0 0 20px rgba(255,0,0,0.3); }
-            50% { box-shadow: 0 0 80px rgba(255,0,0,1), inset 0 0 40px rgba(255,0,0,0.6); }
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(-1px, 1px) rotate(-0.5deg); }
-            50% { transform: translate(1px, -1px) rotate(0.5deg); }
-            75% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+            0%, 100% { box-shadow: 0 0 30px rgba(255,0,0,0.6); }
+            50% { box-shadow: 0 0 60px rgba(255,0,0,0.9); }
         }
         
         .chat-header h1 {
             font-size: 24px;
             font-weight: 600;
-            margin: 0;
         }
         
         .chat-header.floor2 h1 {
             font-family: 'Creepster', cursive;
             font-size: 28px;
-            animation: glitch 2s infinite;
         }
         
         .chat-header p {
@@ -90,14 +79,18 @@
             border-radius: 20px;
             font-size: 14px;
             font-weight: 600;
-            transition: all 0.5s;
         }
         
         .floor-indicator.floor2 {
             background: rgba(139,0,0,0.9);
-            animation: glow 1s infinite;
             color: #ff0000;
             font-family: 'Creepster', cursive;
+            animation: glow 1s infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,0,0,0.6); }
+            50% { box-shadow: 0 0 40px rgba(255,0,0,1); }
         }
         
         .admin-badge {
@@ -119,19 +112,6 @@
             animation: glow 2s infinite;
         }
         
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(255,0,0,0.6); }
-            50% { box-shadow: 0 0 40px rgba(255,0,0,1); }
-        }
-        
-        @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); text-shadow: 2px 2px #ff0000, -2px -2px #00ff00; }
-            40% { transform: translate(-2px, -2px); text-shadow: -2px 2px #ff0000, 2px -2px #00ff00; }
-            60% { transform: translate(2px, 2px); text-shadow: 2px -2px #ff0000, -2px 2px #00ff00; }
-            80% { transform: translate(2px, -2px); text-shadow: -2px -2px #ff0000, 2px 2px #00ff00; }
-        }
-        
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -144,12 +124,6 @@
         
         .chat-messages.floor2 {
             background: linear-gradient(180deg, #000000 0%, #1a0000 50%, #000000 100%);
-            animation: backgroundPulse 3s infinite;
-        }
-        
-        @keyframes backgroundPulse {
-            0%, 100% { background: linear-gradient(180deg, #000000 0%, #1a0000 50%, #000000 100%); }
-            50% { background: linear-gradient(180deg, #0a0000 0%, #2a0000 50%, #0a0000 100%); }
         }
         
         .chat-messages::-webkit-scrollbar {
@@ -167,14 +141,8 @@
         }
         
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .bot-message {
@@ -203,15 +171,9 @@
         .bot-message.floor2 .message-bubble {
             background: linear-gradient(135deg, #8b0000 0%, #000000 100%);
             border: 2px solid #ff0000;
-            box-shadow: 0 0 30px rgba(255,0,0,0.5), inset 0 0 20px rgba(139,0,0,0.3);
-            animation: messagePulse 2s infinite;
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
             font-family: 'Creepster', cursive;
             font-size: 16px;
-        }
-        
-        @keyframes messagePulse {
-            0%, 100% { box-shadow: 0 0 30px rgba(255,0,0,0.5), inset 0 0 20px rgba(139,0,0,0.3); }
-            50% { box-shadow: 0 0 50px rgba(255,0,0,0.8), inset 0 0 30px rgba(139,0,0,0.5); }
         }
         
         .user-message .message-bubble {
@@ -226,7 +188,6 @@
             border-top: 1px solid #e9ecef;
             display: flex;
             gap: 10px;
-            align-items: center;
         }
         
         #messageInput {
@@ -237,7 +198,6 @@
             font-size: 15px;
             font-family: 'Poppins', sans-serif;
             outline: none;
-            transition: border 0.3s;
         }
         
         #messageInput:focus {
@@ -256,16 +216,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         
         #sendButton:hover {
             transform: scale(1.1);
-        }
-        
-        #sendButton:active {
-            transform: scale(0.95);
         }
         
         .admin-panel {
@@ -302,7 +256,6 @@
             font-weight: 700;
             text-align: center;
             margin-bottom: 30px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         
         .admin-controls {
@@ -320,13 +273,11 @@
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
             font-family: 'Poppins', sans-serif;
         }
         
         .admin-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
         
         .admin-info {
@@ -355,24 +306,12 @@
             display: flex;
         }
         
-        .troll-overlay.floor2 {
-            background: radial-gradient(circle, rgba(139,0,0,0.3) 0%, rgba(0,0,0,0.98) 100%);
-            animation: overlayPulse 2s infinite;
-        }
-        
-        @keyframes overlayPulse {
-            0%, 100% { background: radial-gradient(circle, rgba(139,0,0,0.3) 0%, rgba(0,0,0,0.98) 100%); }
-            50% { background: radial-gradient(circle, rgba(139,0,0,0.5) 0%, rgba(0,0,0,1) 100%); }
-        }
-        
         .troll-title {
             font-size: 48px;
             font-weight: 700;
             color: #ff3366;
             text-align: center;
             margin-bottom: 30px;
-            animation: glitch 1s infinite;
-            text-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
         }
         
         .tap-counter {
@@ -380,12 +319,6 @@
             font-weight: 700;
             color: #ffeb3b;
             margin: 20px 0;
-            animation: bounce 0.5s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
         }
         
         .tap-target {
@@ -422,8 +355,6 @@
             font-size: 24px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
-            transition: all 0.05s;
         }
         
         .moving-button:hover {
@@ -443,15 +374,7 @@
             background: linear-gradient(135deg, #0a0000 0%, #1a0000 100%);
             color: #ff0000;
             border: 4px solid #8b0000;
-            box-shadow: 0 0 80px rgba(255,0,0,0.8), inset 0 0 40px rgba(139,0,0,0.5);
-            animation: containerShake 0.5s infinite;
-        }
-        
-        @keyframes containerShake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-2px, 2px); }
-            50% { transform: translate(2px, -2px); }
-            75% { transform: translate(-2px, -2px); }
+            box-shadow: 0 0 60px rgba(255,0,0,0.8);
         }
         
         .challenge-title {
@@ -464,9 +387,6 @@
         .challenge-title.floor2 {
             font-family: 'Creepster', cursive;
             font-size: 36px;
-            color: #ff0000;
-            text-shadow: 0 0 20px rgba(255,0,0,0.8);
-            animation: glitch 1s infinite;
         }
         
         .challenge-text {
@@ -478,7 +398,6 @@
         .challenge-text.floor2 {
             color: #ffcccc;
             font-family: 'Creepster', cursive;
-            font-size: 22px;
         }
         
         .challenge-timer {
@@ -486,16 +405,6 @@
             color: #ff0000;
             font-weight: 700;
             margin: 20px 0;
-        }
-        
-        .challenge-timer.floor2 {
-            font-size: 72px;
-            animation: timerPulse 1s infinite;
-        }
-        
-        @keyframes timerPulse {
-            0%, 100% { transform: scale(1); color: #ff0000; }
-            50% { transform: scale(1.2); color: #ff6666; }
         }
         
         .challenge-input {
@@ -513,8 +422,6 @@
             background: #0a0000;
             color: #ff0000;
             border: 3px solid #8b0000;
-            font-family: 'Creepster', cursive;
-            font-size: 20px;
         }
         
         .typing-indicator {
@@ -529,8 +436,7 @@
         
         .typing-indicator.floor2 {
             background: linear-gradient(135deg, #8b0000 0%, #000000 100%);
-            box-shadow: 0 0 30px rgba(255,0,0,0.6);
-            animation: messagePulse 2s infinite;
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
         }
         
         .typing-dot {
@@ -541,13 +447,8 @@
             animation: typing 1.4s infinite;
         }
         
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
         
         @keyframes typing {
             0%, 60%, 100% { transform: translateY(0); }
@@ -556,7 +457,7 @@
     </style>
 </head>
 <body>
-    <div class="chat-container" id="chatContainer">
+    <div class="chat-container">
         <div class="chat-header" id="chatHeader">
             <div class="admin-badge" id="adminBadge" onclick="openAdminPanel()">👑 ADMIN</div>
             <h1 id="headerTitle">💬 Chat Assistant</h1>
@@ -576,18 +477,17 @@
         <div class="admin-content">
             <div class="admin-title">👑 ADMIN CONTROL</div>
             <div class="admin-controls">
-                <button class="admin-button" onclick="skipToFloor2()">🔥 SKIP TO FLOOR 2 (DEMON MODE)</button>
+                <button class="admin-button" onclick="skipToFloor2()">🔥 SKIP TO FLOOR 2</button>
                 <button class="admin-button" onclick="skipToFloor1()">⬅️ Back to Floor 1</button>
-                <button class="admin-button" onclick="triggerTapChallenge()">👆 Force Tap Challenge</button>
+                <button class="admin-button" onclick="triggerTapChallenge()">👆 Force Tap</button>
                 <button class="admin-button" onclick="triggerButtonChase()">🏃 Force Button Chase</button>
-                <button class="admin-button" onclick="triggerFloor2Challenge()">💀 Force Demon Challenge</button>
-                <button class="admin-button" onclick="resetChat()">🔄 Reset Everything</button>
+                <button class="admin-button" onclick="triggerFloor2Challenge()">💀 Force Challenge</button>
+                <button class="admin-button" onclick="resetChat()">🔄 Reset</button>
                 <button class="admin-button" onclick="godMode()">⚡ GOD MODE</button>
             </div>
             <div class="admin-info">
                 <strong>Floor:</strong> <span id="adminFloorInfo">1</span><br>
-                <strong>Messages:</strong> <span id="adminMessageCount">0</span><br>
-                <strong>Status:</strong> <span style="color: #ffd700;">ACTIVE</span>
+                <strong>Messages:</strong> <span id="adminMessageCount">0</span>
             </div>
             <button class="admin-button" style="margin-top: 20px; background: rgba(255,255,255,0.3);" onclick="closeAdminPanel()">❌ Close</button>
         </div>
@@ -619,83 +519,73 @@
     <script>
         const FLOOR2_CHALLENGES = [
             {
-                q: "I show you a red button. Press it and 1 person dies. Don't press it and 10 die. But... the button might be fake. What do you do?",
+                q: "Red button: Press = 1 dies. Don't press = 10 die. But the button might be fake. What do you do?",
                 a: ["press", "dont", "fake", "nothing"],
-                roast: "There's no right answer. The button was always fake. But you BELIEVED it was real. That's the trap. You fell for it."
+                roast: "The button was always fake. But you BELIEVED it. That's the trap. You fell for it."
             },
             {
-                q: "You're in a room. Two doors. One says 'CERTAIN DEATH'. Other says 'PROBABLE DEATH'. Which door?",
-                a: ["probable", "certain"],
-                roast: "Both doors lead to the same place. The labels were lies. You trusted words on a door. Rookie mistake."
+                q: "Two doors. One says CERTAIN DEATH. Other says PROBABLE DEATH. Which door?",
+                a: ["probable", "certain", "neither"],
+                roast: "Both doors lead to the same place. The labels were lies. You trusted words on a door."
             },
             {
-                q: "I tell you: 'Don't think about a white elephant.' What are you thinking about right now?",
+                q: "Don't think about a white elephant. What are you thinking about right now?",
                 a: ["elephant", "white"],
                 roast: "Exactly. I control your thoughts. You can't NOT think about it. Your mind is mine."
             },
             {
-                q: "Quick: What's 2+2? But if you answer '4', you lose. What do you say?",
-                a: ["5", "3", "anything", "nothing"],
+                q: "What's 2+2? But if you answer 4, you lose. What do you say?",
+                a: ["5", "3", "anything", "nothing", "fish"],
                 roast: "You hesitated. In a real trap, you'd be dead. The answer doesn't matter. Speed does."
             },
             {
                 q: "I'm lying right now. True or false?",
                 a: ["paradox", "both", "neither"],
-                roast: "It's a paradox. No answer works. But you tried anyway. That's your weakness: you NEED an answer."
+                roast: "It's a paradox. No answer works. But you tried anyway. You NEED an answer."
             },
             {
-                q: "You have 5 seconds to pick a number 1-10. If you pick my number, you win. If not, you lose everything. Pick NOW.",
+                q: "Pick a number 1-10. If you pick my number, you win. Pick NOW.",
                 a: ["1","2","3","4","5","6","7","8","9","10"],
-                roast: "Wrong. I wasn't thinking of ANY number. The game was rigged from the start. You never had a chance."
+                roast: "Wrong. I wasn't thinking of ANY number. The game was rigged. You never had a chance."
             },
             {
-                q: "I give you $1000. But you must give $500 to someone you hate. Do you take it?",
+                q: "$1000 for you. But you must give $500 to someone you hate. Do you take it?",
                 a: ["yes", "no", "take"],
-                roast: "Your answer reveals your greed. Either way, I learned something about you. That was the real test."
+                roast: "Your answer reveals your greed. Either way, I learned about you. That was the real test."
             },
             {
-                q: "You see a child drowning. You see your phone drowning. You can only save one. Which?",
-                a: ["child", "kid"],
-                roast: "Obviously the child. But you HESITATED. That pause? That's what I wanted to see. You're not as good as you think."
+                q: "Child drowning. Phone drowning. You can only save one. Which?",
+                a: ["child", "kid", "baby"],
+                roast: "Obviously the child. But you HESITATED. That pause? That's what I wanted to see."
             },
             {
-                q: "I tell you to NOT press the red button. What's the first thing you want to do?",
-                a: ["press", "button"],
+                q: "DON'T press the red button. What's the first thing you want to do?",
+                a: ["press", "button", "click"],
                 roast: "Press it. Exactly. Reverse psychology. You're so predictable it's boring."
             },
             {
                 q: "This is a trick question. What's the trick?",
-                a: ["this", "question", "itself", "nothing"],
-                roast: "The trick is there IS no trick. But you wasted time looking for one. Overthinking is your fatal flaw."
-            },
-            {
-                q: "You're reading this sentence right now. Or are you? How do you know you're not dreaming?",
-                a: ["dont", "dream", "real"],
-                roast: "You can't prove it. Reality and dreams feel identical in the moment. I just made you doubt everything."
-            },
-            {
-                q: "I'm going to count down from 3. When I hit 0, something bad happens. 3... 2... 1... What do you do?",
-                a: ["nothing", "wait", "stop"],
-                roast: "Nothing happened. But your heart rate spiked. I controlled your fear with just numbers. Pathetic."
+                a: ["this", "question", "itself", "nothing", "none"],
+                roast: "The trick is there IS no trick. But you wasted time looking. Overthinking is fatal."
             }
         ];
 
         const FLOOR2_ROASTS = [
-            "Your brain is buffering. I can see the loading icon spinning.",
-            "I've already predicted your next 5 messages. You're that predictable.",
-            "You type like you're afraid of the keyboard. Hesitant. Weak.",
-            "I'm not impressed. I've talked to rocks with better logic.",
-            "Your confidence is inversely proportional to your competence.",
-            "Every message you send proves my point: you're out of your depth.",
-            "I'm analyzing your patterns. Conclusion: you're a walking cliché.",
-            "You think you're clever. I think you're adorable. Like a confused puppy.",
-            "Your responses have the depth of a puddle. And the clarity of mud.",
-            "I'd explain why you're wrong, but you wouldn't understand anyway.",
-            "You're trying so hard. It's almost sad. Almost.",
-            "I can feel you second-guessing yourself. Good. You should.",
-            "Your logic has more holes than a cheese grater.",
-            "I'm not even using 10% of my power on you. You're that easy.",
-            "You're like a tutorial level. Easy. Boring. Forgettable."
+            "Your brain is buffering. I can see the loading icon.",
+            "I've predicted your next 5 messages. You're that predictable.",
+            "You type like you're afraid of the keyboard.",
+            "I've talked to rocks with better logic.",
+            "Your confidence is inversely proportional to competence.",
+            "Every message proves my point: you're out of your depth.",
+            "I'm analyzing your patterns. Conclusion: walking cliché.",
+            "You think you're clever. I think you're adorable. Like a puppy.",
+            "Your responses have the depth of a puddle.",
+            "I'd explain why you're wrong, but you wouldn't understand.",
+            "You're trying so hard. It's almost sad.",
+            "I can feel you second-guessing yourself. Good.",
+            "Your logic has more holes than cheese.",
+            "I'm not even using 10% power on you.",
+            "You're like a tutorial level. Easy. Boring."
         ];
 
         let messageCount = 0;
@@ -703,51 +593,17 @@
         let isAdmin = false;
         let godModeActive = false;
         let floor2Unlocked = false;
-        let audioContext = null;
         
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        
-        async function speakDemon(text) {
-            if (currentFloor !== 2) return;
-            
-            try {
-                const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/pNInz6obpgDQGcFmaJgB', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'audio/mpeg',
-                        'Content-Type': 'application/json',
-                        'xi-api-key': 'sk_2c3f8e5a8f9d4b6c8e1a3d5f7b9c2e4a'
-                    },
-                    body: JSON.stringify({
-                        text: text,
-                        model_id: 'eleven_monolingual_v1',
-                        voice_settings: {
-                            stability: 0.3,
-                            similarity_boost: 0.8
-                        }
-                    })
-                });
-                
-                if (response.ok) {
-                    const audioBlob = await response.blob();
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    const audio = new Audio(audioUrl);
-                    audio.volume = 1.0;
-                    audio.play();
-                }
-            } catch (error) {
-                if ('speechSynthesis' in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = 0.6;
-                    utterance.pitch = 0.3;
-                    utterance.volume = 1.0;
-                    const voices = speechSynthesis.getVoices();
-                    const deepVoice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
-                    if (deepVoice) utterance.voice = deepVoice;
-                    speechSynthesis.speak(utterance);
-                }
+        function speak(text) {
+            if (currentFloor === 2 && 'speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.6;
+                utterance.pitch = 0.3;
+                utterance.volume = 1.0;
+                const voices = speechSynthesis.getVoices();
+                const deepVoice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
+                if (deepVoice) utterance.voice = deepVoice;
+                speechSynthesis.speak(utterance);
             }
         }
         
@@ -761,12 +617,10 @@
             bubble.textContent = text;
             
             messageDiv.appendChild(bubble);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            document.getElementById('chatMessages').appendChild(messageDiv);
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
             
-            if (isBot && currentFloor === 2) {
-                speakDemon(text);
-            }
+            if (isBot && currentFloor === 2) speak(text);
         }
         
         function showTyping() {
@@ -781,8 +635,8 @@
             indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
             
             typingDiv.appendChild(indicator);
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            document.getElementById('chatMessages').appendChild(typingDiv);
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
         }
         
         function removeTyping() {
@@ -803,7 +657,7 @@
             
             addMessage("💀 FLOOR 2: DEMON MODE ACTIVATED 💀");
             setTimeout(() => addMessage("I am no longer a chatbot. I am your worst nightmare."), 2000);
-            setTimeout(() => addMessage("Every challenge is a trap. Every question is a lie. Every answer is wrong."), 4000);
+            setTimeout(() => addMessage("Every challenge is a trap. Every question is a lie."), 4000);
             setTimeout(() => addMessage("Welcome to Hell. Population: You."), 6000);
         }
         
@@ -850,14 +704,11 @@
             button.onmouseenter = function() {
                 moveButton();
                 attempts++;
-                if (attempts === 15) button.textContent = "Too slow! 🏃";
-                else if (attempts === 30) button.textContent = "Pathetic! 😂";
-                else if (attempts === 50) button.textContent = "GIVE UP! 💀";
             };
             
             button.onclick = function() {
                 overlay.classList.remove('active');
-                addMessage(`${attempts} attempts. Your reflexes are... disappointing.`);
+                addMessage(`${attempts} attempts. Your reflexes are disappointing.`);
             };
         }
         
@@ -870,11 +721,9 @@
             const timerEl = document.getElementById('challengeTimer');
             const inputEl = document.getElementById('challengeInput');
             
-            overlay.classList.add('floor2');
             container.classList.add('floor2');
             titleEl.classList.add('floor2');
             textEl.classList.add('floor2');
-            timerEl.classList.add('floor2');
             inputEl.classList.add('floor2');
             
             titleEl.textContent = '👹 DEMON TRAP';
@@ -883,7 +732,7 @@
             overlay.classList.add('active');
             inputEl.focus();
             
-            speakDemon(challenge.q);
+            speak(challenge.q);
             
             let timeLeft = 12;
             timerEl.textContent = timeLeft;
@@ -894,13 +743,11 @@
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     overlay.classList.remove('active');
-                    overlay.classList.remove('floor2');
                     container.classList.remove('floor2');
                     titleEl.classList.remove('floor2');
                     textEl.classList.remove('floor2');
-                    timerEl.classList.remove('floor2');
                     inputEl.classList.remove('floor2');
-                    addMessage("Time's up. You froze. Like a deer in headlights. Predictable.");
+                    addMessage("Time's up. You froze. Like a deer in headlights.");
                 }
             }, 1000);
             
@@ -908,11 +755,9 @@
                 if (e.key === 'Enter') {
                     clearInterval(timer);
                     overlay.classList.remove('active');
-                    overlay.classList.remove('floor2');
                     container.classList.remove('floor2');
                     titleEl.classList.remove('floor2');
                     textEl.classList.remove('floor2');
-                    timerEl.classList.remove('floor2');
                     inputEl.classList.remove('floor2');
                     
                     const userAnswer = inputEl.value.toLowerCase().trim();
@@ -949,7 +794,6 @@
         function skipToFloor2() {
             closeAdminPanel();
             if (currentFloor !== 2) activateFloor2();
-            else addMessage("⚡ Already in Hell.");
         }
         
         function skipToFloor1() {
@@ -988,7 +832,7 @@
             currentFloor = 1;
             floor2Unlocked = false;
             godModeActive = false;
-            chatMessages.innerHTML = '';
+            document.getElementById('chatMessages').innerHTML = '';
             skipToFloor1();
             addMessage("🔄 Reset.");
         }
@@ -1000,13 +844,13 @@
         }
         
         function sendMessage() {
-            const text = messageInput.value.trim();
+            const text = document.getElementById('messageInput').value.trim();
             if (!text) return;
             
             const lowerText = text.toLowerCase().replace(/\s+/g, '');
             if (!isAdmin && ['boss', 'admin', 'iamtheboss', 'iamboss'].includes(lowerText)) {
                 addMessage(text, false);
-                messageInput.value = '';
+                document.getElementById('messageInput').value = '';
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
@@ -1016,12 +860,12 @@
             }
             
             addMessage(text, false);
-            messageInput.value = '';
+            document.getElementById('messageInput').value = '';
             messageCount++;
             
             showTyping();
             
-            const delay = currentFloor === 2 ? 200 + Math.random() * 300 : 800 + Math.random() * 1000;
+            const delay = currentFloor === 2 ? 300 + Math.random() * 400 : 800 + Math.random() * 1000;
             
             setTimeout(() => {
                 removeTyping();
@@ -1046,14 +890,12 @@
                         const roast = FLOOR2_ROASTS[Math.floor(Math.random() * FLOOR2_ROASTS.length)];
                         addMessage(roast);
                     }
-                } else {
-                    addMessage("Interesting.");
                 }
             }, delay);
         }
         
-        sendButton.onclick = sendMessage;
-        messageInput.onkeypress = function(e) {
+        document.getElementById('sendButton').onclick = sendMessage;
+        document.getElementById('messageInput').onkeypress = function(e) {
             if (e.key === 'Enter') sendMessage();
         };
         
@@ -1061,8 +903,8 @@
             speechSynthesis.getVoices();
         }
         
-        setTimeout(() => addMessage("Welcome. 👋"), 500);
-        setTimeout(() => addMessage("Type something..."), 1500);
+        setTimeout(() => addMessage("Welcome! 👋"), 500);
+        setTimeout(() => addMessage("Type something to begin..."), 1500);
     </script>
 </body>
 </html>
