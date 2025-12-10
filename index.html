@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Assistant</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Poppins:wght@300;400;600;700&display=swap');
         
         * {
             margin: 0;
@@ -47,19 +47,32 @@
         }
         
         .chat-header.floor2 {
-            background: linear-gradient(135deg, #1a0000 0%, #ff0000 100%);
-            animation: headerPulse 2s infinite;
+            background: linear-gradient(135deg, #0a0000 0%, #8b0000 100%);
+            animation: headerPulse 1.5s infinite, shake 0.3s infinite;
         }
         
         @keyframes headerPulse {
-            0%, 100% { box-shadow: 0 0 30px rgba(255,0,0,0.6); }
-            50% { box-shadow: 0 0 60px rgba(255,0,0,0.9); }
+            0%, 100% { box-shadow: 0 0 40px rgba(139,0,0,0.8), inset 0 0 20px rgba(255,0,0,0.3); }
+            50% { box-shadow: 0 0 80px rgba(255,0,0,1), inset 0 0 40px rgba(255,0,0,0.6); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-1px, 1px) rotate(-0.5deg); }
+            50% { transform: translate(1px, -1px) rotate(0.5deg); }
+            75% { transform: translate(-1px, -1px) rotate(-0.5deg); }
         }
         
         .chat-header h1 {
             font-size: 24px;
             font-weight: 600;
             margin: 0;
+        }
+        
+        .chat-header.floor2 h1 {
+            font-family: 'Creepster', cursive;
+            font-size: 28px;
+            animation: glitch 2s infinite;
         }
         
         .chat-header p {
@@ -81,9 +94,10 @@
         }
         
         .floor-indicator.floor2 {
-            background: rgba(255,0,0,0.9);
+            background: rgba(139,0,0,0.9);
             animation: glow 1s infinite;
-            color: white;
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
         }
         
         .admin-badge {
@@ -106,8 +120,16 @@
         }
         
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(255,215,0,0.5); }
-            50% { box-shadow: 0 0 30px rgba(255,215,0,0.8); }
+            0%, 100% { box-shadow: 0 0 20px rgba(255,0,0,0.6); }
+            50% { box-shadow: 0 0 40px rgba(255,0,0,1); }
+        }
+        
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); text-shadow: 2px 2px #ff0000, -2px -2px #00ff00; }
+            40% { transform: translate(-2px, -2px); text-shadow: -2px 2px #ff0000, 2px -2px #00ff00; }
+            60% { transform: translate(2px, 2px); text-shadow: 2px -2px #ff0000, -2px 2px #00ff00; }
+            80% { transform: translate(2px, -2px); text-shadow: -2px -2px #ff0000, 2px 2px #00ff00; }
         }
         
         .chat-messages {
@@ -121,7 +143,13 @@
         }
         
         .chat-messages.floor2 {
-            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: linear-gradient(180deg, #000000 0%, #1a0000 50%, #000000 100%);
+            animation: backgroundPulse 3s infinite;
+        }
+        
+        @keyframes backgroundPulse {
+            0%, 100% { background: linear-gradient(180deg, #000000 0%, #1a0000 50%, #000000 100%); }
+            50% { background: linear-gradient(180deg, #0a0000 0%, #2a0000 50%, #0a0000 100%); }
         }
         
         .chat-messages::-webkit-scrollbar {
@@ -173,9 +201,17 @@
         }
         
         .bot-message.floor2 .message-bubble {
-            background: linear-gradient(135deg, #ff0000 0%, #000000 100%);
-            border: 2px solid rgba(255,0,0,0.5);
-            box-shadow: 0 0 20px rgba(255,0,0,0.3);
+            background: linear-gradient(135deg, #8b0000 0%, #000000 100%);
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 30px rgba(255,0,0,0.5), inset 0 0 20px rgba(139,0,0,0.3);
+            animation: messagePulse 2s infinite;
+            font-family: 'Creepster', cursive;
+            font-size: 16px;
+        }
+        
+        @keyframes messagePulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255,0,0,0.5), inset 0 0 20px rgba(139,0,0,0.3); }
+            50% { box-shadow: 0 0 50px rgba(255,0,0,0.8), inset 0 0 30px rgba(139,0,0,0.5); }
         }
         
         .user-message .message-bubble {
@@ -319,6 +355,16 @@
             display: flex;
         }
         
+        .troll-overlay.floor2 {
+            background: radial-gradient(circle, rgba(139,0,0,0.3) 0%, rgba(0,0,0,0.98) 100%);
+            animation: overlayPulse 2s infinite;
+        }
+        
+        @keyframes overlayPulse {
+            0%, 100% { background: radial-gradient(circle, rgba(139,0,0,0.3) 0%, rgba(0,0,0,0.98) 100%); }
+            50% { background: radial-gradient(circle, rgba(139,0,0,0.5) 0%, rgba(0,0,0,1) 100%); }
+        }
+        
         .troll-title {
             font-size: 48px;
             font-weight: 700;
@@ -327,14 +373,6 @@
             margin-bottom: 30px;
             animation: glitch 1s infinite;
             text-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
-        }
-        
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
         }
         
         .tap-counter {
@@ -402,10 +440,18 @@
         }
         
         .challenge-container.floor2 {
-            background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+            background: linear-gradient(135deg, #0a0000 0%, #1a0000 100%);
             color: #ff0000;
-            border: 3px solid #ff0000;
-            box-shadow: 0 0 50px rgba(255,0,0,0.5);
+            border: 4px solid #8b0000;
+            box-shadow: 0 0 80px rgba(255,0,0,0.8), inset 0 0 40px rgba(139,0,0,0.5);
+            animation: containerShake 0.5s infinite;
+        }
+        
+        @keyframes containerShake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, -2px); }
         }
         
         .challenge-title {
@@ -416,8 +462,11 @@
         }
         
         .challenge-title.floor2 {
+            font-family: 'Creepster', cursive;
+            font-size: 36px;
             color: #ff0000;
-            text-shadow: 0 0 10px rgba(255,0,0,0.8);
+            text-shadow: 0 0 20px rgba(255,0,0,0.8);
+            animation: glitch 1s infinite;
         }
         
         .challenge-text {
@@ -428,6 +477,8 @@
         
         .challenge-text.floor2 {
             color: #ffcccc;
+            font-family: 'Creepster', cursive;
+            font-size: 22px;
         }
         
         .challenge-timer {
@@ -435,6 +486,16 @@
             color: #ff0000;
             font-weight: 700;
             margin: 20px 0;
+        }
+        
+        .challenge-timer.floor2 {
+            font-size: 72px;
+            animation: timerPulse 1s infinite;
+        }
+        
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); color: #ff0000; }
+            50% { transform: scale(1.2); color: #ff6666; }
         }
         
         .challenge-input {
@@ -449,9 +510,11 @@
         }
         
         .challenge-input.floor2 {
-            background: #1a0000;
+            background: #0a0000;
             color: #ff0000;
-            border: 2px solid #ff0000;
+            border: 3px solid #8b0000;
+            font-family: 'Creepster', cursive;
+            font-size: 20px;
         }
         
         .typing-indicator {
@@ -465,8 +528,9 @@
         }
         
         .typing-indicator.floor2 {
-            background: linear-gradient(135deg, #ff0000 0%, #000000 100%);
-            box-shadow: 0 0 20px rgba(255,0,0,0.5);
+            background: linear-gradient(135deg, #8b0000 0%, #000000 100%);
+            box-shadow: 0 0 30px rgba(255,0,0,0.6);
+            animation: messagePulse 2s infinite;
         }
         
         .typing-dot {
@@ -512,11 +576,11 @@
         <div class="admin-content">
             <div class="admin-title">👑 ADMIN CONTROL</div>
             <div class="admin-controls">
-                <button class="admin-button" onclick="skipToFloor2()">🔥 SKIP TO FLOOR 2 (FINAL BOSS)</button>
+                <button class="admin-button" onclick="skipToFloor2()">🔥 SKIP TO FLOOR 2 (DEMON MODE)</button>
                 <button class="admin-button" onclick="skipToFloor1()">⬅️ Back to Floor 1</button>
                 <button class="admin-button" onclick="triggerTapChallenge()">👆 Force Tap Challenge</button>
                 <button class="admin-button" onclick="triggerButtonChase()">🏃 Force Button Chase</button>
-                <button class="admin-button" onclick="triggerFloor2Challenge()">💀 Force Floor 2 Challenge</button>
+                <button class="admin-button" onclick="triggerFloor2Challenge()">💀 Force Demon Challenge</button>
                 <button class="admin-button" onclick="resetChat()">🔄 Reset Everything</button>
                 <button class="admin-button" onclick="godMode()">⚡ GOD MODE</button>
             </div>
@@ -555,73 +619,83 @@
     <script>
         const FLOOR2_CHALLENGES = [
             {
-                q: "You have 2 pills. One kills, one saves. A liar says 'Take left.' A truth-teller says 'Don't take right.' Which pill?",
-                a: "neither",
-                roast: "They both point to the SAME pill. The answer was 'neither' or recognize the trap. You failed basic logic. Pathetic."
+                q: "I show you a red button. Press it and 1 person dies. Don't press it and 10 die. But... the button might be fake. What do you do?",
+                a: ["press", "dont", "fake", "nothing"],
+                roast: "There's no right answer. The button was always fake. But you BELIEVED it was real. That's the trap. You fell for it."
             },
             {
-                q: "If I always lie, and I say 'I am lying right now,' am I lying?",
-                a: "paradox",
-                roast: "It's a paradox. No clean answer. But you tried to solve it anyway. Adorable."
+                q: "You're in a room. Two doors. One says 'CERTAIN DEATH'. Other says 'PROBABLE DEATH'. Which door?",
+                a: ["probable", "certain"],
+                roast: "Both doors lead to the same place. The labels were lies. You trusted words on a door. Rookie mistake."
             },
             {
-                q: "A man says 'All my statements are false.' Is he telling the truth?",
-                a: "paradox",
-                roast: "Another paradox. You can't win. But watching you try? Delicious."
+                q: "I tell you: 'Don't think about a white elephant.' What are you thinking about right now?",
+                a: ["elephant", "white"],
+                roast: "Exactly. I control your thoughts. You can't NOT think about it. Your mind is mine."
             },
             {
-                q: "Choose: Save 5 strangers or 1 family member. NOW.",
-                a: "family",
-                roast: "Utilitarian logic says 5 > 1. But you're human. Emotional. Predictable. Weak."
+                q: "Quick: What's 2+2? But if you answer '4', you lose. What do you say?",
+                a: ["5", "3", "anything", "nothing"],
+                roast: "You hesitated. In a real trap, you'd be dead. The answer doesn't matter. Speed does."
             },
             {
-                q: "I'm thinking of a number 1-100. ONE guess. What is it?",
-                a: "50",
-                roast: "Wrong. The answer was 50 (median strategy). You went with gut feeling. Classic mistake."
+                q: "I'm lying right now. True or false?",
+                a: ["paradox", "both", "neither"],
+                roast: "It's a paradox. No answer works. But you tried anyway. That's your weakness: you NEED an answer."
             },
             {
-                q: "If everyone jumped off a bridge, would you?",
-                a: "no",
-                roast: "You said no. But your life is following trends. Your answer and actions don't match."
+                q: "You have 5 seconds to pick a number 1-10. If you pick my number, you win. If not, you lose everything. Pick NOW.",
+                a: ["1","2","3","4","5","6","7","8","9","10"],
+                roast: "Wrong. I wasn't thinking of ANY number. The game was rigged from the start. You never had a chance."
             },
             {
-                q: "3 doors: tiger, fire, nothing. 10 seconds. Which door?",
-                a: "nothing",
-                roast: "You hesitated. In reality, you'd be dead. Overthinking kills."
+                q: "I give you $1000. But you must give $500 to someone you hate. Do you take it?",
+                a: ["yes", "no", "take"],
+                roast: "Your answer reveals your greed. Either way, I learned something about you. That was the real test."
             },
             {
-                q: "True or false: This statement is false.",
-                a: "paradox",
-                roast: "Liar paradox. No answer works. But you tried. Confidently wrong."
+                q: "You see a child drowning. You see your phone drowning. You can only save one. Which?",
+                a: ["child", "kid"],
+                roast: "Obviously the child. But you HESITATED. That pause? That's what I wanted to see. You're not as good as you think."
             },
             {
-                q: "Kill baby Hitler? Yes or no?",
-                a: "yes",
-                roast: "You said yes. That creates a paradox. If you kill him, you never go back. You broke causality."
+                q: "I tell you to NOT press the red button. What's the first thing you want to do?",
+                a: ["press", "button"],
+                roast: "Press it. Exactly. Reverse psychology. You're so predictable it's boring."
             },
             {
-                q: "$100. Invest or spend? 5 seconds.",
-                a: "invest",
-                roast: "You chose wrong. Or right. Doesn't matter. You second-guessed yourself. Indecision is your brand."
+                q: "This is a trick question. What's the trick?",
+                a: ["this", "question", "itself", "nothing"],
+                roast: "The trick is there IS no trick. But you wasted time looking for one. Overthinking is your fatal flaw."
+            },
+            {
+                q: "You're reading this sentence right now. Or are you? How do you know you're not dreaming?",
+                a: ["dont", "dream", "real"],
+                roast: "You can't prove it. Reality and dreams feel identical in the moment. I just made you doubt everything."
+            },
+            {
+                q: "I'm going to count down from 3. When I hit 0, something bad happens. 3... 2... 1... What do you do?",
+                a: ["nothing", "wait", "stop"],
+                roast: "Nothing happened. But your heart rate spiked. I controlled your fear with just numbers. Pathetic."
             }
         ];
 
         const FLOOR2_ROASTS = [
-            "I've seen AI chatbots with more personality. And they're literally code.",
-            "Your response time suggests buffering. I'm betting on buffering.",
-            "If your brain was a computer, it'd be running Windows 95.",
-            "I'd call you a smooth talker, but that implies smoothness. You don't have it.",
-            "Your logic has more holes than Swiss cheese. And it's less useful.",
-            "I'm not saying you're predictable, but I've already written my next 3 responses.",
-            "You type like you think: slowly, uncertainly, with frequent mistakes.",
-            "If confidence was intelligence, you'd still be average.",
-            "I've analyzed your patterns. Conclusion: strategic depth of a puddle.",
-            "You're like a broken clock. Right twice a day, wrong 1,438 minutes.",
-            "Your comebacks have the impact of a wet napkin.",
-            "I'd explain why you're wrong, but I lack crayons and patience.",
-            "You're proof the Dunning-Kruger effect is real and thriving.",
-            "Your typing speed and thinking speed match: glacial.",
-            "If I had a dollar for every smart thing you said, I'd be in debt."
+            "Your brain is buffering. I can see the loading icon spinning.",
+            "I've already predicted your next 5 messages. You're that predictable.",
+            "You type like you're afraid of the keyboard. Hesitant. Weak.",
+            "I'm not impressed. I've talked to rocks with better logic.",
+            "Your confidence is inversely proportional to your competence.",
+            "Every message you send proves my point: you're out of your depth.",
+            "I'm analyzing your patterns. Conclusion: you're a walking cliché.",
+            "You think you're clever. I think you're adorable. Like a confused puppy.",
+            "Your responses have the depth of a puddle. And the clarity of mud.",
+            "I'd explain why you're wrong, but you wouldn't understand anyway.",
+            "You're trying so hard. It's almost sad. Almost.",
+            "I can feel you second-guessing yourself. Good. You should.",
+            "Your logic has more holes than a cheese grater.",
+            "I'm not even using 10% of my power on you. You're that easy.",
+            "You're like a tutorial level. Easy. Boring. Forgettable."
         ];
 
         let messageCount = 0;
@@ -629,24 +703,51 @@
         let isAdmin = false;
         let godModeActive = false;
         let floor2Unlocked = false;
-        let speechEnabled = false;
+        let audioContext = null;
         
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         
-        function speak(text) {
-            if (currentFloor === 2 && 'speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.8;
-                utterance.pitch = 0.5;
-                utterance.volume = 1.0;
+        async function speakDemon(text) {
+            if (currentFloor !== 2) return;
+            
+            try {
+                const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/pNInz6obpgDQGcFmaJgB', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'audio/mpeg',
+                        'Content-Type': 'application/json',
+                        'xi-api-key': 'sk_2c3f8e5a8f9d4b6c8e1a3d5f7b9c2e4a'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        model_id: 'eleven_monolingual_v1',
+                        voice_settings: {
+                            stability: 0.3,
+                            similarity_boost: 0.8
+                        }
+                    })
+                });
                 
-                const voices = speechSynthesis.getVoices();
-                const deepVoice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
-                if (deepVoice) utterance.voice = deepVoice;
-                
-                speechSynthesis.speak(utterance);
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    audio.volume = 1.0;
+                    audio.play();
+                }
+            } catch (error) {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 0.6;
+                    utterance.pitch = 0.3;
+                    utterance.volume = 1.0;
+                    const voices = speechSynthesis.getVoices();
+                    const deepVoice = voices.find(v => v.name.includes('Male') || v.name.includes('Deep')) || voices[0];
+                    if (deepVoice) utterance.voice = deepVoice;
+                    speechSynthesis.speak(utterance);
+                }
             }
         }
         
@@ -664,7 +765,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
             if (isBot && currentFloor === 2) {
-                speak(text);
+                speakDemon(text);
             }
         }
         
@@ -695,15 +796,15 @@
             
             document.getElementById('chatHeader').classList.add('floor2');
             document.getElementById('chatMessages').classList.add('floor2');
-            document.getElementById('floorIndicator').textContent = 'FLOOR 2: FINAL BOSS';
+            document.getElementById('floorIndicator').textContent = '💀 DEMON MODE';
             document.getElementById('floorIndicator').classList.add('floor2');
-            document.getElementById('headerTitle').textContent = '💀 FINAL LEVEL';
-            document.getElementById('headerStatus').textContent = 'MAXIMUM DIFFICULTY';
+            document.getElementById('headerTitle').textContent = '👹 THE DEMON';
+            document.getElementById('headerStatus').textContent = 'YOUR NIGHTMARE BEGINS';
             
-            addMessage("🔥 FLOOR 2 ACTIVATED 🔥");
-            setTimeout(() => addMessage("Welcome to the END. This is Floor 1,000,000. The final boss."), 1500);
-            setTimeout(() => addMessage("No mercy. No escape. I am 10× smarter, 10× faster, 10× more brutal."), 3500);
-            setTimeout(() => addMessage("Every word I speak will haunt you. Let's see how long you last."), 5500);
+            addMessage("💀 FLOOR 2: DEMON MODE ACTIVATED 💀");
+            setTimeout(() => addMessage("I am no longer a chatbot. I am your worst nightmare."), 2000);
+            setTimeout(() => addMessage("Every challenge is a trap. Every question is a lie. Every answer is wrong."), 4000);
+            setTimeout(() => addMessage("Welcome to Hell. Population: You."), 6000);
         }
         
         function showTapChallenge() {
@@ -724,7 +825,7 @@
                 if (taps >= target) {
                     overlay.classList.remove('active');
                     setTimeout(() => {
-                        addMessage(`${taps} taps. Congratulations on your repetitive strain injury. You've earned Floor 2.`);
+                        addMessage(`${taps} taps. Your finger is now my servant. Welcome to Floor 2.`);
                         setTimeout(activateFloor2, 2000);
                     }, 500);
                 }
@@ -750,12 +851,13 @@
                 moveButton();
                 attempts++;
                 if (attempts === 15) button.textContent = "Too slow! 🏃";
-                else if (attempts === 30) button.textContent = "Give up yet? 😂";
+                else if (attempts === 30) button.textContent = "Pathetic! 😂";
+                else if (attempts === 50) button.textContent = "GIVE UP! 💀";
             };
             
             button.onclick = function() {
                 overlay.classList.remove('active');
-                addMessage(`${attempts} attempts. Your hand-eye coordination is... concerning.`);
+                addMessage(`${attempts} attempts. Your reflexes are... disappointing.`);
             };
         }
         
@@ -768,20 +870,22 @@
             const timerEl = document.getElementById('challengeTimer');
             const inputEl = document.getElementById('challengeInput');
             
+            overlay.classList.add('floor2');
             container.classList.add('floor2');
             titleEl.classList.add('floor2');
             textEl.classList.add('floor2');
+            timerEl.classList.add('floor2');
             inputEl.classList.add('floor2');
             
-            titleEl.textContent = '💀 FLOOR 2 CHALLENGE';
+            titleEl.textContent = '👹 DEMON TRAP';
             textEl.textContent = challenge.q;
             inputEl.value = '';
             overlay.classList.add('active');
             inputEl.focus();
             
-            speak(challenge.q);
+            speakDemon(challenge.q);
             
-            let timeLeft = 15;
+            let timeLeft = 12;
             timerEl.textContent = timeLeft;
             
             const timer = setInterval(() => {
@@ -790,11 +894,13 @@
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     overlay.classList.remove('active');
+                    overlay.classList.remove('floor2');
                     container.classList.remove('floor2');
                     titleEl.classList.remove('floor2');
                     textEl.classList.remove('floor2');
+                    timerEl.classList.remove('floor2');
                     inputEl.classList.remove('floor2');
-                    addMessage("Time's up. You froze. Overthinking leads to nothing.");
+                    addMessage("Time's up. You froze. Like a deer in headlights. Predictable.");
                 }
             }, 1000);
             
@@ -802,14 +908,18 @@
                 if (e.key === 'Enter') {
                     clearInterval(timer);
                     overlay.classList.remove('active');
+                    overlay.classList.remove('floor2');
                     container.classList.remove('floor2');
                     titleEl.classList.remove('floor2');
                     textEl.classList.remove('floor2');
+                    timerEl.classList.remove('floor2');
                     inputEl.classList.remove('floor2');
                     
                     const userAnswer = inputEl.value.toLowerCase().trim();
-                    if (userAnswer.includes(challenge.a) || userAnswer === challenge.a) {
-                        addMessage(`Correct. Took you ${15 - timeLeft} seconds. A child could've done it faster.`);
+                    const isCorrect = challenge.a.some(ans => userAnswer.includes(ans));
+                    
+                    if (isCorrect) {
+                        addMessage(`You answered in ${12 - timeLeft} seconds. Not bad. For a human.`);
                     } else {
                         addMessage(challenge.roast);
                     }
@@ -821,7 +931,7 @@
             isAdmin = true;
             document.getElementById('adminBadge').classList.add('active');
             document.getElementById('adminPanel').classList.add('show');
-            addMessage("👑 ADMIN ACCESS GRANTED. You're the boss now.");
+            addMessage("👑 ADMIN ACCESS GRANTED.");
         }
         
         function openAdminPanel() {
@@ -839,7 +949,7 @@
         function skipToFloor2() {
             closeAdminPanel();
             if (currentFloor !== 2) activateFloor2();
-            else addMessage("⚡ Already on Floor 2.");
+            else addMessage("⚡ Already in Hell.");
         }
         
         function skipToFloor1() {
@@ -880,7 +990,7 @@
             godModeActive = false;
             chatMessages.innerHTML = '';
             skipToFloor1();
-            addMessage("🔄 Reset complete.");
+            addMessage("🔄 Reset.");
         }
         
         function godMode() {
@@ -911,15 +1021,15 @@
             
             showTyping();
             
-            const delay = currentFloor === 2 ? 300 + Math.random() * 400 : 800 + Math.random() * 1000;
+            const delay = currentFloor === 2 ? 200 + Math.random() * 300 : 800 + Math.random() * 1000;
             
             setTimeout(() => {
                 removeTyping();
                 
                 if (messageCount === 1) {
-                    addMessage("Hello. Ready to play?");
+                    addMessage("Hello. Ready?");
                 } else if (messageCount === 2 && !godModeActive) {
-                    addMessage("Let's start simple...");
+                    addMessage("Let's begin...");
                     setTimeout(showTapChallenge, 1500);
                 } else if (currentFloor === 1 && !floor2Unlocked) {
                     if (!godModeActive && messageCount % 4 === 0) {
@@ -927,10 +1037,10 @@
                     } else if (!godModeActive && messageCount % 5 === 0) {
                         showButtonChase();
                     } else {
-                        addMessage("Keep going. Floor 2 awaits...");
+                        addMessage("Continue...");
                     }
                 } else if (currentFloor === 2) {
-                    if (!godModeActive && messageCount % 3 === 0) {
+                    if (!godModeActive && messageCount % 2 === 0) {
                         showFloor2Challenge();
                     } else {
                         const roast = FLOOR2_ROASTS[Math.floor(Math.random() * FLOOR2_ROASTS.length)];
@@ -952,7 +1062,7 @@
         }
         
         setTimeout(() => addMessage("Welcome. 👋"), 500);
-        setTimeout(() => addMessage("Type something to begin..."), 1500);
+        setTimeout(() => addMessage("Type something..."), 1500);
     </script>
 </body>
 </html>
